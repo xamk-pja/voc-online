@@ -2,11 +2,11 @@
 import { routerReducer as routing } from 'react-router-redux';
 import { combineReducers } from 'redux';
 import appReducer from './appReducer';
-import {todoReducer} from './todoReducer';
+import {buildingReducer} from './buildingReducer';
 
 export default combineReducers({
   appState:appReducer,
-  todoState:todoReducer,
+  buildingState:buildingReducer,
   routing
   // More reducers if there are
   // can go here

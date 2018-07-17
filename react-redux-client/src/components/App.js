@@ -3,32 +3,33 @@ import React from 'react';
 import { Navbar,Nav,NavItem } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import './App.css';
-import TodoForm from './TodoForm';
+import BuildingForm from './BuildingForm';
 
 export default class App extends React.Component {
   constructor(props){
     super(props);
-    this.toggleAddTodo = this.toggleAddTodo.bind(this);
-    this.addTodo = this.addTodo.bind(this);
+    this.toggleAddBuilding = this.toggleAddBuilding.bind(this);
+    this.addBuilding = this.addBuilding.bind(this);
   }
 
-  toggleAddTodo(e){
+  toggleAddBuilding(e){
     e.preventDefault();
-     this.props.mappedToggleAddTodo();
+     this.props.mappedToggleAddBuilding();
   }
 
-  addTodo(e){
+  addBuilding(e){
       e.preventDefault();
-      const form = document.getElementById('addTodoForm');
+      const form = document.getElementById('addBuildingForm');
       if(form.todoText.value !== ""  && form.todoDesc.value !== ""){
         const data = new FormData();
-       data.append('todoText', form.todoText.value);
+        data.append('todoText', form.todoText.value);
         data.append('todoDesc', form.todoDesc.value);
+        data.append('buildingType', form.buildingType.value);
         // const data = {
         //   todoText: form.todoText.value,
         //   todoDesc: form.todoDesc.value
         // }
-        this.props.mappedAddTodo(data);
+        this.props.mappedAddBuilding(data);
       form.reset();
       }
       else{
@@ -43,26 +44,26 @@ export default class App extends React.Component {
       <Navbar inverse  collapseOnSelect className="customNav">
     <Navbar.Header>
       <Navbar.Brand>
-        <a href="/#">Mern Stack Todo App</a>
+        <a href="/#">VOC online</a>
       </Navbar.Brand>
       <Navbar.Toggle />
     </Navbar.Header>
     <Navbar.Collapse>
       <Nav>
         <LinkContainer to={{ pathname: '/', query: {  } }}>
-           <NavItem eventKey={1}>Home</NavItem>
+           <NavItem eventKey={1}>Koti</NavItem>
         </LinkContainer>
       </Nav>
       <Nav pullRight>
-      <LinkContainer to={{ pathname: '/', query: {  } }} onClick={this.toggleAddTodo}>
-         <NavItem eventKey={1}>Add Todo</NavItem>
+      <LinkContainer to={{ pathname: '/', query: {  } }} onClick={this.toggleAddBuilding}>
+         <NavItem eventKey={1}>Lisää uusi rakennus</NavItem>
       </LinkContainer>
       </Nav>
     </Navbar.Collapse>
   </Navbar>
   <div className="container">
-  {appState.showAddTodo &&
-    <TodoForm addTodo={this.addTodo} />
+  {appState.showAddBuilding &&
+    <BuildingForm addBuilding={this.addBuilding} />
   }
   { /* Each Smaller Components */}
    {this.props.children}
