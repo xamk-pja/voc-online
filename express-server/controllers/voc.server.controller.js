@@ -1,91 +1,160 @@
 // ./express-server/controllers/voc.server.controller.js
-import mongoose from 'mongoose';
 
 //import models
-import VOC from '../models/voc.server.model';
 
-export const getBuildings = (req,res) => {
-  VOC.find().exec((err,buildings) => {
-    if(err){
-    return res.json({'success':false,'message':'Virhe'});
+
+import { CalcPoint, Building } from '../models/voc.server.building-model';
+
+export const getBuildings = (req, res) => {
+  Building.find().exec((err, buildings) => {
+    if (err) {
+      return res.json({ 'success': false, 'message': 'Virhe' });
     }
 
-    return res.json({'success':true,'message':'Kohteet haettu onnistuneesti',buildings});
+    return res.json({ 'success': true, 'message': 'Kohteet haettu onnistuneesti', buildings });
   });
+
+
 }
 
-export const addBuilding = (req,res) => {
+export const addBuilding = (req, res) => {
   console.log(req.body);
-  const newBuilding = new VOC(req.body);
-  newBuilding.save((err,building) => {
-    if(err){
-      console.log("err: " +err);
+  const newBuilding = new Building(req.body);
+  newBuilding.save((err, building) => {
+    if (err) {
+      console.log("err: " + err);
 
-    return res.json({'success':false,'message':'Virhe'});
+      return res.json({ 'success': false, 'message': 'Virhe' });
     }
 
-    return res.json({'success':true,'message':'Kohde lisätty onnistuneesti',building});
+    return res.json({ 'success': true, 'message': 'Kohde lisätty onnistuneesti', building });
   })
 }
 
 // Add calc point for building
-export const addNewCalcPoint = (req,res) => {
-  console.log("CPPP: "+req.body.parent);
-
-  console.log(req.body);
-  VOC.update({'_id':req.body.parent}, {'$push' : { calcPoint: {
-    'shortDesc':req.body.shortDesc,
-    'longDesc':req.body.longDesc
-  }}}, function(err, calcPoint) {
+export const addNewCalcPoint = (req, res) => {
+  Building.findOne({ '_id': req.body.parent }, function (err, building) {
     if (err) {
-      console.log(err);
-      return res.json({'success':false,'message':'Virhe'});
+      console.log("err: " + err);
+      return res.json({ 'success': false, 'message': 'Virhe' });
     }
     
-    return res.json({'success':true,'message':'Kohde lisätty onnistuneesti',calcPoint});
+    const newCalcPoint = new CalcPoint(req.body);
+    building.calcPoints.push(newCalcPoint);
+
+    building.save((err, updatedBuilding) => {
+      if (err) {
+        console.log("err: " + err);
+        return res.json({ 'success': false, 'message': 'Virhe' });
+      }
+      console.log("Building CalcPoint ObjectRef added for CalcPoint: "+newCalcPoint._id);
+    });
+
+    newCalcPoint.save((err, cp) => {
+      if (err) {
+        console.log("err: " + err);
+        return res.json({ 'success': false, 'message': 'Virhe' });
+      }
+      return res.json({'success':true,'message':'Mittauspaikka lisätty onnistuneesti',newCalcPoint});
+    } );  
   });
+
+
+
+  // newCalcPoint.save((err, newCalcPoint) => {
+  //   if (err) {
+  //     console.log("err: " + err);
+  //     return res.json({ 'success': false, 'message': 'Virhe' });
+  //   }
+
+  //   Building.findById(req.body.parent).;
+  // })
+
+  // Building.update({'_id':req.body.parent}, {'$push' : { calcPoints: {
+  //   'shortDesc':newCalcPoint.shortDesc,
+  //   'longDesc':newCalcPoint.longDesc
+  // }}}, function(err, calcPoint) {
+  //   if (err) {
+  //     console.log(err);
+  //     return res.json({'success':false,'message':'Virhe'});
+  //   }
+  //   console.log("Returning: "+newCalcPoint);
+  //   return res.json({'success':true,'message':'Mittauspaikka lisätty onnistuneesti',newCalcPoint});
+  // });
 }
 
-//   VOC.findOneAndUpdate({ _id:req.body.parent }, req.body, { new:true }, (err,calcPoint) => {
-//     console.log("CPPP: "+calcPoint);
+// Edit calc point for building
+export const editCalcPoint = (req, res) => {
+  console.log(req.body);
 
-//     if(err){
-//     return res.json({'success':false,'message':'Virhe','error':err});
-//     }
-//     return res.json({'success':true,'message':'Päivitettiin onnistuneesti',calcPoint});
-//   })
-// }
+  CalcPoint.findByIdAndUpdate(req.body.id, req.body, { new: true }, function (err, newCalcPoint) {
+    if (err) {
+      return res.json({ 'success': false, 'message': 'Virhe', 'error': err });
+    }
 
-export const updateBuilding = (req,res) => {
-  VOC.findOneAndUpdate({ _id:req.body.id }, req.body, { new:true }, (err,building) => {
-    if(err){
-    return res.json({'success':false,'message':'Virhe','error':err});
+    return res.json({ 'success': true, 'message': 'Päivitettiin onnistuneesti', newCalcPoint });
+  });
+
+  // CalcPoint.findOneAndUpdate({ _id:req.body.id }, updatedCP, { new:true }, (err,calcPoint) => {
+  //   if(err){
+  //     return res.json({'success':false,'message':'Virhe','error':err});
+  //   }
+
+  //   // console.log("Updated CalcPoint: "+calcPoint.shortDesc + " l: "+calcPoint.longDesc);
+
+  //   return res.json({'success':true,'message':'Päivitettiin onnistuneesti',calcPoint});
+  // })
+}
+
+export const deleteCalcPoint = (req, res) => {
+
+  console.log(req.params.id);
+  CalcPoint.findByIdAndRemove(req.params.id, (err, calcPoint) => {
+    if (err) {
+      return res.json({ 'success': false, 'message': 'Virhe' });
+    }
+
+    console.log("Deletion succesful of mittauspaikka ID: " + req.params.id);
+    return res.json({ 'success': true, 'message': 'Mittauspaikka poistettu onnistuneesti.' });
+  })
+}
+
+
+export const updateBuilding = (req, res) => {
+
+  console.log(req.body);
+  Building.findOneAndUpdate({ _id: req.body.id }, req.body, { new: true }, (err, building) => {
+    if (err) {
+      return res.json({ 'success': false, 'message': 'Virhe', 'error': err });
     }
     console.log(building);
-    return res.json({'success':true,'message':'Päivitettiin onnistuneesti',building});
+    return res.json({ 'success': true, 'message': 'Päivitettiin onnistuneesti', building });
   })
 }
 
-export const getBuilding = (req,res) => {
-  VOC.find({_id:req.params.id}).exec((err,building) => {
-    if(err){
-    return res.json({'success':false,'message':'Virhe'});
+export const getBuilding = (req, res) => {
+  Building.find({ _id: req.params.id }).populate('calcPoints').exec((err, building) => {
+    if (err) {
+      return res.json({ 'success': false, 'message': 'Virhe' });
     }
-    if(building.length){
-      return res.json({'success':true,'message':'Rakennus haettu onnistuneesti id:llä',building});
+
+    console.log("it's my building: "+building);
+
+    if (building.length) {
+      return res.json({ 'success': true, 'message': 'Rakennus haettu onnistuneesti id:llä', building });
     }
-    else{
-      return res.json({'success':false,'message':'Rakennusta ei löytynyt'});
+    else {
+      return res.json({ 'success': false, 'message': 'Rakennusta ei löytynyt' });
     }
   })
 }
 
-export const deleteBuilding = (req,res) => {
-  VOC.findByIdAndRemove(req.params.id, (err,building) => {
-    if(err){
-    return res.json({'success':false,'message':'Virhe'});
+export const deleteBuilding = (req, res) => {
+  Building.findByIdAndRemove(req.params.id, (err, building) => {
+    if (err) {
+      return res.json({ 'success': false, 'message': 'Virhe' });
     }
 
-    return res.json({'success':true,'message':building.todoText+' deleted successfully'});
+    return res.json({ 'success': true, 'message': building.todoText + ' deleted successfully' });
   })
 }
