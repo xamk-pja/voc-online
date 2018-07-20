@@ -13,9 +13,16 @@ router.route('/')
      .put(vocController.updateBuilding);
 
 router.route('/:id')
-      .post(vocController.addNewCalcPoint)
       .get(vocController.getBuilding)
       .delete(vocController.deleteBuilding);
+
+
+router.route('/cp/')
+      .put(vocController.editCalcPoint)
+
+router.route('/cp/:id')
+      .post(vocController.addNewCalcPoint)
+      .delete(vocController.deleteCalcPoint);
 
 
 export default router;

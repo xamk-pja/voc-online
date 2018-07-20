@@ -15,13 +15,17 @@ const mapDispatchToProps = (dispatch) => {
   return {
     //you can now say this.props.mappedAppActions
     mappedfetchBuildingById: bid => dispatch(vocActions.fetchBuildingById(bid)),
-    mappedEditBuildingCalcPoint: bid => dispatch(vocActions.editBuildingCalcPoint(bid)),
-    addCalcPointModal: () => dispatch(vocActions.addCalcPointModal()),
+    mappedShowCalcPointAddModal: () => dispatch(vocActions.addCalcPointModal()),
     mappedAddCalcPoint: calcPoint => dispatch(vocActions.addNewCalcPoint(calcPoint)),
-    mappedhideCPModal: () => dispatch(vocActions.hideCPEditModal()),
-    // mappedDeleteBuilding: bid => dispatch(vocActions.deleteBuilding(bid)),
-    // mappedshowDeleteModal: bid => dispatch(vocActions.showDeleteModal(bid)),
-    // mappedhideDeleteModal: () => dispatch(vocActions.hideDeleteModal())
+    mappedHideCalcPointAddModal: () => dispatch(vocActions.hideCalcPointAddModal()),
+
+    mappedEditCalcPoint: calcPointToEdit => dispatch(vocActions.editCalcPoint(calcPointToEdit)),
+    mappedShowCalcPointEditModal: calcPointToEdit => dispatch(vocActions.showCalcPointEditModal(calcPointToEdit)),
+    mappedHideCalcPointEditModal: () => dispatch(vocActions.hideCalcPointEditModal()),
+    
+    mappedDeleteCalcPoint: calcPointToDelete => dispatch(vocActions.deleteCalcPoint(calcPointToDelete)),
+    mappedShowCalcPointDeleteModal: calcPointToDelete => dispatch(vocActions.showCalcPointDeleteModal(calcPointToDelete)),
+    mappedHideCalcPointDeleteModal: () => dispatch(vocActions.hideCalcPointDeleteModal())
   }
 }
 

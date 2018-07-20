@@ -232,7 +232,6 @@ export const deleteBuildingRequest = (building) => {
      building
    }
 }
-
 export const deleteBuildingSuccess = (message) => {
   return {
     type:'DELETE_BUILDING_SUCCESS',
@@ -261,18 +260,18 @@ export const hideDeleteModal = () => {
 }
 
 /* Should add new calc point for parent building */
-export const addNewCalcPoint = (data) => {
+export const addNewCalcPoint = (calcPoint) => {
     
   return (dispatch) => {
-    dispatch(addNewCalcPointRequest(data));
+    dispatch(addNewCalcPointRequest(calcPoint));
 
-    fetch(apiUrl + data.get("parent"), {
+    fetch(apiUrl +"/cp/" + calcPoint.get("parent"), {
       method:'post',
-      body: data,
+      body: calcPoint,
     }).then(response => {
       if(response.ok){
         response.json().then(data => {console.log(data);
-          dispatch(addNewCalcPointRequestSuccess(data.calcPoint, data.message))
+          dispatch(addNewCalcPointRequestSuccess(data.newCalcPoint, data.message))
         })
       }
       else{
@@ -295,7 +294,7 @@ export const addNewCalcPointRequestSuccess = (calcPoint,message) => {
   return {
     type: 'ADD_NEW_CP_REQUEST_SUCCESS',
     calcPoint:calcPoint,
-    message:message
+    successMsg:message
   }
 }
 
@@ -306,16 +305,16 @@ export const addNewCalcPointRequestFailed = (error) => {
   }
 }
 
-export const editBuildingCalcPoint = (cp) => {
+export const editCalcPoint = (calcPointToEdit) => {
   return (dispatch) => {
-    dispatch(editBuildingCalcPointRequest(cp));
-    return fetch(apiUrl, {
+    dispatch(editBuildingCalcPointRequest(calcPointToEdit));
+    return fetch(apiUrl + "/cp/", {
       method:'put',
-      body:cp
+      body:calcPointToEdit
     }).then(response => {
       if(response.ok){
         response.json().then(data => {
-          dispatch(editBuildingCalcPointSuccess(data.cp, data.message));
+          dispatch(editBuildingCalcPointSuccess(data.newCalcPoint, data.message));
         })
       }
       else{
@@ -327,49 +326,111 @@ export const editBuildingCalcPoint = (cp) => {
   }
 }
 
-
-
-
 // Calculation position that's linked to a building
 
 export const addCalcPointModal = () => {
   return {
-    type:'ADD_CALC_POINT_MODAL'
+    type:'ADD_CP_MODAL'
+
+
   }
 }
 
-export const hideCPEditModal = () => {
+export const hideCalcPointAddModal = () => {
   return {
-    type:'HIDE_CALC_POINT_MODAL'
+    type:'HIDE_CP_ADD_MODAL'
+  }
+}
+
+
+export const hideCalcPointEditModal = () => {
+  return {
+    type:'HIDE_CP_EDIT_MODAL'
   }
 }
 
 export const showCalcPointEditModal = (calcPointToEdit) => {
   return {
-    type:'EDIT_CALC_POINT_MODAL',
-    cp:calcPointToEdit
+    type:'EDIT_CP_MODAL',
+    calcPointToEdit:calcPointToEdit
   }
 }
 
 
-export const editBuildingCalcPointRequest = (cp) => {
+export const editBuildingCalcPointRequest = (calcPointToEdit) => {
   return {
-    type:'EDIT_BUILDING_CALC_POINT_REQUEST',
-    cp
+    type:'EDIT_CP_REQUEST',
+    calcPointToEdit
   }
 }
 
-export const editBuildingCalcPointSuccess = (cp,message) => {
+export const editBuildingCalcPointSuccess = (calcPointToEdit,message) => {
  return {
-   type:'EDIT_BUILDING_CALC_POINT_SUCCESS',
-   cp:cp,
-   message:message
+   type:'EDIT_CP_SUCCESS',
+   calcPointToEdit:calcPointToEdit,
+   successMsg:message
  }
 }
 
 export const editBuildingCalcPointFailed = (error) => {
  return {
-   type:'EDIT_BUILDING_CALC_POINT_FAILED',
+   type:'EDIT_CP_FAILED',
    error
  }
+}
+
+
+export const deleteCalcPoint = (calcPoint) => {
+  return (dispatch) => {
+    dispatch(deleteCalcPointRequest(calcPoint));
+    return fetch(apiUrl + "/cp/" + calcPoint._id ,{
+      method:'delete'
+    }).then(response => {
+      if(response.ok){
+        response.json().then(data => {
+          dispatch(deleteCalcPointSuccess(data.message));
+        })
+      }
+      else{
+        response.json().then(error => {
+          dispatch(deleteCalcPointFailed(error));
+        })
+      }
+    })
+
+  }
+}
+
+export const deleteCalcPointRequest = (calcPoint) => {
+   return {
+     type:'DELETE_CP_REQUEST',
+     calcPoint
+   }
+}
+
+export const deleteCalcPointSuccess = (message) => {
+  return {
+    type:'DELETE_CP_SUCCESS',
+    successMsg:message
+  }
+}
+
+export const deleteCalcPointFailed = (error) => {
+  return {
+    type:'DELETE_CP_FAILED',
+    error
+  }
+}
+
+export const showCalcPointDeleteModal = (calcPoint) => {
+  return {
+    type:'SHOW_DELETE_CP_MODAL',
+    calcPointToDelete:calcPoint
+  }
+}
+
+export const hideCalcPointDeleteModal = () => {
+  return {
+    type:'HIDE_DELETE_CP_MODAL'
+  }
 }

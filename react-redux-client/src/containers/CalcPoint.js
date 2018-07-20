@@ -17,7 +17,7 @@ const mapDispatchToProps = (dispatch) => {
     mappedfetchBuildingById: bid => dispatch(vocActions.fetchBuildingById(bid)),
     mappedEditBuildingCalcPoint: bid => dispatch(vocActions.editBuildingCalcPoint(bid)),
     addCalcPointModal: () => dispatch(vocActions.addCalcPointModal()),
-    mappedhideCPModal: () => dispatch(vocActions.hideCPEditModal()),
+    mappedhideCPModal: () => dispatch(vocActions.hideCalcPointEditModal()),
     // mappedDeleteBuilding: bid => dispatch(vocActions.deleteBuilding(bid)),
     // mappedshowDeleteModal: bid => dispatch(vocActions.showDeleteModal(bid)),
     // mappedhideDeleteModal: () => dispatch(vocActions.hideDeleteModal())

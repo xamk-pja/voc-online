@@ -3,12 +3,13 @@ import { Button, ControlLabel, FormControl, FormGroup } from 'react-bootstrap';
 
 const CalcPointEditForm = (props) => {
   return (
-    <form className="form form-horizontal" id="CalcPointEditForm" onSubmit={props.editCalcPoint}>
+    <form className="form form-horizontal" id="CalcPointEditForm" onSubmit={props.calcPointToEdit}>
       <div className="row">
         <h3 className="centerAlign">Muokkaa rakennuksen mittauspaikkaa</h3>
         <div className="col-md-12">
           <FormGroup>
             <ControlLabel>Mittauspaikka: </ControlLabel>
+            <input type="hidden" value={props.calcPointData._id} name="id" />
             <FormControl
               type="text" placeholder="Nimi"
               name="shortDesc" defaultValue={props.calcPointData.shortDesc}
@@ -20,7 +21,7 @@ const CalcPointEditForm = (props) => {
             <ControlLabel>Lisätieto: </ControlLabel>
             <FormControl
               componentClass="textarea" placeholder="Syötä kuvaus"
-              name="longDesc" defaultValue={props.calcPointData.shortDesc}
+              name="longDesc" defaultValue={props.calcPointData.longDesc}
             />
           </FormGroup>
         </div>
@@ -37,4 +38,4 @@ const CalcPointEditForm = (props) => {
 //  //here you will see the current selected value of the select input
 // }
 
-export default CalcPointAddForm;
+export default CalcPointEditForm;

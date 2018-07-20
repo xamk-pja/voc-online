@@ -2,6 +2,7 @@
 const INITIAL_STATE = {
   buildings: [],
   building: null,
+  calcPoints: [],
   isFetching: false,
   error: null,
   successMsg: null,
@@ -11,7 +12,8 @@ const INITIAL_STATE = {
   buildingToEdit: null,
   newBuilding: null,
   showCalcPointEditModal: false,
-  buildingCalcPointToEdit: null,
+  calcPointToAdd: null,
+  calcPointToEdit: null,
   addCalcPointModal: false
 }
 
@@ -82,6 +84,7 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         ...currentState,
         buildings: currentState.buildings,
         building: action.building,
+        calcPoints: action.building.calcPoints,
         isFetching: false,
         error: null,
         successMsg: action.message,
@@ -327,12 +330,16 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
 
       }
 
+    /* CALC POINTS */
 
-    case 'ADD_CALC_POINT_MODAL':
+
+
+    case 'ADD_CP_MODAL':
       return {
         ...currentState,
         buildings: currentState.buildings,
         building: currentState.building,
+        calcPoints: currentState.calcPoints,
         isFetching: false,
         error: null,
         successMsg: null,
@@ -341,16 +348,18 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         showEditModal: false,
         buildingToEdit: null,
         newBuilding: null,
+        showCalcPointAddModal: true,
         showCalcPointEditModal: false,
-        buildingCalcPointToEdit: null,
+        calcPointToAdd: null,
         addCalcPointModal: true
     }
 
-    case 'HIDE_CALC_POINT_MODAL':
+    case 'HIDE_CP_ADD_MODAL':
       return {
         ...currentState,
         buildings: currentState.buildings,
         building: currentState.building,
+        calcPoints: currentState.calcPoints,
         isFetching: false,
         error: null,
         successMsg: null,
@@ -359,8 +368,29 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         showEditModal: false,
         buildingToEdit: null,
         newBuilding: null,
+        showAddCalcPointModal: false,
+        showEditCalcPointModal: false,
+        calcPointToAdd: null,
+        addCalcPointModal: false
+    }
+
+    case 'HIDE_CP_EDIT_MODAL':
+      return {
+        ...currentState,
+        buildings: currentState.buildings,
+        building: currentState.building,
+        calcPoints: currentState.calcPoints,
+        isFetching: false,
+        error: null,
+        successMsg: null,
+        showDeleteModal: false,
+        buildingToDelete: null,
+        showEditModal: false,
+        buildingToEdit: null,
+        newBuilding: null,
+        showCalcPointAddModal: false,
         showCalcPointEditModal: false,
-        buildingCalcPointToEdit: null,
+        calcPointToAdd: null,
         addCalcPointModal: false
     }
 
@@ -369,6 +399,7 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         ...currentState,
         buildings: currentState.buildings,
         building: currentState.building,
+        calcPoints: currentState.calcPoints,
         isFetching: true,
         error: null,
         successMsg: null,
@@ -377,26 +408,27 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         showEditModal: false,
         buildingToEdit: null,
         newBuilding: null,
-        showCalcPointEditModal: true,
-        buildingCalcPointToEdit: action.cp
+        showCalcPointAddModal: true,
+        showCalcPointEditModal: false,
+        showCalcPointDeleteModal: false,
+        calcPointToAdd: action.calcPoint
       }
 
 
     case 'ADD_NEW_CP_REQUEST_SUCCESS':
-      // const updatedCalcPoints = currentState.building.map((calcPoint) => {
-      //   if (calcPoint._id !== action.calcPoint._id) {
-      //     //This is not the item we care about, keep it as is
-      //     return calcPoint;
-      //   }
-      //   //Otherwise, this is the one we want to return an updated value
-      //   return { ...calcPoint, ...action.building.calcPoint }
-      // })
+      const cur = currentState.calcPoints;
+      var points = cur.map((el) => {
+        return el; 
+      });
+      points.push(action.calcPoint);
 
+      const updatedCalcPoints = points;
+      
       return {
         ...currentState,
         buildings: currentState.buildings,
         building: currentState.building,
-        calcPoints: [...currentState.building.calcPoint, action.calcPoint],
+        calcPoints: updatedCalcPoints,
         isFetching: false,
         error: null,
         successMsg: action.successMsg,
@@ -405,8 +437,9 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         showEditModal: false,
         buildingToEdit: null,
         newBuilding: null,
-        showCalcPointEditModal: true,
-        buildingCalcPointToEdit: null
+        showCalcPointAddModal: true,
+        showCalcPointEditModal: false,
+        calcPointToAdd: action.calcPoint
       }
 
     case 'ADD_NEW_CP_REQUEST_FAILED':
@@ -414,6 +447,7 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         ...currentState,
         buildings: currentState.buildings,
         building: currentState.building,
+        calcPoints : currentState.calcPoints,
         isFetching: false,
         error: action.error,
         successMsg: null,
@@ -422,16 +456,18 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         showEditModal: false,
         buildingToEdit: null,
         newBuilding: null,
+        showCalcPointAddModal: true,
         showCalcPointEditModal: false,
-        buildingCalcPointToEdit: null,
+        calcPointToAdd: action.cp,
       }
 
 
-    case 'EDIT_CALC_POINT_MODAL':
+    case 'EDIT_CP_MODAL':
       return {
         ...currentState,
         buildings: currentState.buildings,
         building: currentState.building,
+        calcPoints : currentState.calcPoints,
         isFetching: false,
         error: null,
         successMsg: null,
@@ -440,16 +476,18 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         showEditModal: false,
         buildingToEdit: null,
         newBuilding: null,
+        showCalcPointAddModal: false,
         showCalcPointEditModal: true,
-        buildingCalcPointToEdit: null
+        calcPointToEdit: action.calcPointToEdit
       }
 
 
-    case 'EDIT_BUILDING_CALC_POINT_REQUEST':
+    case 'EDIT_CP_REQUEST':
       return {
         ...currentState,
         buildings: currentState.buildings,
         building: currentState.building,
+        calcPoints : currentState.calcPoints,
         isFetching: false,
         error: null,
         successMsg: null,
@@ -458,17 +496,26 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         showEditModal: false,
         buildingToEdit: null,
         newBuilding: null,
+        showCalcPointAddModal: false,
         showCalcPointEditModal: true,
-        buildingCalcPointToEdit: action.cp
+        calcPointToEdit: action.calcPointToEdit
       }
 
 
-    case 'EDIT_BUILDING_CALC_POINT_SUCCESS':
+    case 'EDIT_CP_SUCCESS':
+      const current = currentState.calcPoints;
+      var points2 = current.map((rel) => {
+        if (rel._id === action.calcPointToEdit._id ) {
+          return action.calcPointToEdit;
+        }
+        return rel; 
+      });
+      const updatedCp = points2;
       return {
         ...currentState,
         buildings: currentState.buildings,
         building: currentState.building,
-        calcPoints: [...currentState.building.calcPoint, action.calcPoint],
+        calcPoints : updatedCp,
         isFetching: false,
         error: null,
         successMsg: action.successMsg,
@@ -477,15 +524,17 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         showEditModal: false,
         buildingToEdit: null,
         newBuilding: null,
+        showCalcPointAddModal: false,
         showCalcPointEditModal: true,
-        buildingCalcPointToEdit: null
+        calcPointToEdit: action.calcPointToEdit
       }
 
-    case 'EDIT_BUILDING_CALC_POINT_FAILED':
+    case 'EDIT_CP_FAILED':
       return {
         ...currentState,
         buildings: currentState.buildings,
         building: currentState.building,
+        calcPoints : currentState.calcPoints,
         isFetching: false,
         error: action.error,
         successMsg: null,
@@ -494,9 +543,113 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         showEditModal: false,
         buildingToEdit: null,
         newBuilding: null,
+        showCalcPointAddModal: false,
+        showCalcPointEditModal: true,
+        calcPointToEdit: action.calcPointToEdit
+    }
+
+    case 'DELETE_CP_REQUEST':
+      return {
+        ...currentState,
+        buildings: currentState.buildings,
+        building: currentState.building,
+        calcPoints : currentState.calcPoints,
+        isFetching: true,
+        error: null,
+        successMsg: null,
+        showDeleteModal: false,
+        buildingToDelete: null,
+        showEditModal: false,
+        buildingToEdit: null,
+        newBuilding: null,
+        showCalcPointAddModal: false,
         showCalcPointEditModal: false,
-        buildingCalcPointToEdit: null,
+        showCalcPointDeleteModal : true,
+        calcPointToDelete : action.calcPoint
       }
+
+    case 'DELETE_CP_SUCCESS':
+      const filteredCp = currentState.calcPoints.filter((cp) => cp._id !== currentState.calcPointToDelete._id)
+      return {
+        ...currentState,
+        buildings: currentState.buildings,
+        building: currentState.building,
+        calcPoints : filteredCp,
+        isFetching: false,
+        error: null,
+        successMsg: action.message,
+        showDeleteModal: true,
+        buildingToDelete: null,
+        showEditModal: false,
+        buildingToEdit: null,
+        newBuilding: null,
+        showCalcPointAddModal: false,
+        showCalcPointEditModal: false,
+        showCalcPointDeleteModal : false,  
+        calcPointToDelete : null
+      }
+
+
+    case 'DELETE_CP_FAILED':
+      return {
+        ...currentState,
+        buildings: currentState.buildings,
+        building: currentState.building,
+        calcPoints : currentState.calcPoints,
+        isFetching: false,
+        error: action.error,
+        successMsg: null,
+        showDeleteModal: true,
+        buildingToDelete: null,
+        showEditModal: false,
+        buildingToEdit: null,
+        newBuilding: null,
+        showCalcPointAddModal: false,
+        showCalcPointEditModal: false,
+        showCalcPointDeleteModal: true,
+        calcPointToDelete : null
+      }
+
+    case 'SHOW_DELETE_CP_MODAL':
+      return {
+        ...currentState,
+        buildings: currentState.buildings,
+        building: currentState.building,
+        calcPoints : currentState.calcPoints,
+        isFetching: false,
+        error: null,
+        successMsg: null,
+        showDeleteModal: true,
+        buildingToDelete: null,
+        showEditModal: false,
+        buildingToEdit: null,
+        newBuilding: null,
+        showCalcPointAddModal: false,
+        showCalcPointEditModal: false,
+        showCalcPointDeleteModal: true,
+        calcPointToDelete: action.calcPointToDelete
+      }
+
+    case 'HIDE_DELETE_CP_MODAL':
+      return {
+        ...currentState,
+        buildings: currentState.buildings,
+        building: currentState.building,
+        calcPoints : currentState.calcPoints,
+        isFetching: false,
+        error: null,
+        successMsg: null,
+        showDeleteModal: false,
+        buildingToDelete: null,
+        showEditModal: false,
+        buildingToEdit: null,
+        newBuilding: null,
+        showCalcPointAddModal: false,
+        showCalcPointEditModal: false,
+        showCalcPointDeleteModal: false,
+        calcPointToDelete: null
+    }
+
 
     default:
       return currentState;
