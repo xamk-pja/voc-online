@@ -10,19 +10,21 @@ export const toggleAddBook = () => {
   }
 }
 
-export const addNewBuilding = (building) => {console.log(building)
+export const addNewBuilding = (building) => {
+  console.log(building)
   return (dispatch) => {
     dispatch(addNewBuildingRequest(building));
     return fetch(apiUrl, {
-      method:'post',
+      method: 'post',
       body: building,
     }).then(response => {
-      if(response.ok){
-        response.json().then(data => {console.log(data.building);
+      if (response.ok) {
+        response.json().then(data => {
+          console.log(data.building);
           dispatch(addNewBuildingRequestSuccess(data.building, data.message))
         })
       }
-      else{
+      else {
         response.json().then(error => {
           dispatch(addNewBuildingRequestFailed(error))
         })
@@ -38,11 +40,11 @@ export const addNewBuildingRequest = (building) => {
   }
 }
 
-export const addNewBuildingRequestSuccess = (building,message) => {
+export const addNewBuildingRequestSuccess = (building, message) => {
   return {
     type: 'ADD_NEW_BUILDING_REQUEST_SUCCESS',
-    building:building,
-    message:message
+    building: building,
+    message: message
   }
 }
 
@@ -62,18 +64,18 @@ export const fetchBuildings = () => {
     dispatch(fetchBuildingsRequest());
     // Returns a promise
     return fetch(apiUrl)
-                .then(response => {
-                  if(response.ok){
-                    response.json().then(data => {
-                      dispatch(fetchBuildingsSuccess(data.buildings,data.message));
-                    })
-                  }
-                  else{
-                    response.json().then(error => {
-                      dispatch(fetchBuildingsFailed(error));
-                    })
-                  }
-                })
+      .then(response => {
+        if (response.ok) {
+          response.json().then(data => {
+            dispatch(fetchBuildingsSuccess(data.buildings, data.message));
+          })
+        }
+        else {
+          response.json().then(error => {
+            dispatch(fetchBuildingsFailed(error));
+          })
+        }
+      })
 
 
   }
@@ -81,13 +83,13 @@ export const fetchBuildings = () => {
 
 export const fetchBuildingsRequest = () => {
   return {
-    type:'FETCH_BUILDINGS_REQUEST'
+    type: 'FETCH_BUILDINGS_REQUEST'
   }
 }
 
 
 //Sync action
-export const fetchBuildingsSuccess = (buildings,message) => {
+export const fetchBuildingsSuccess = (buildings, message) => {
   return {
     type: 'FETCH_BUILDINGS_SUCCESS',
     buildings: buildings,
@@ -98,7 +100,7 @@ export const fetchBuildingsSuccess = (buildings,message) => {
 
 export const fetchBuildingsFailed = (error) => {
   return {
-    type:'FETCH_BUILDINGS_FAILED',
+    type: 'FETCH_BUILDINGS_FAILED',
     error
   }
 }
@@ -107,33 +109,34 @@ export const fetchBuildingsFailed = (error) => {
 export const fetchBuildingById = (buildingId) => {
   return (dispatch) => {
     dispatch(fetchBuildingRequest());
-      // Returns a promise
-      return fetch(apiUrl + buildingId)
-             .then(response => {console.log(response)
-               if(response.ok){
-                 response.json().then(data => {
-                   dispatch(fetchBuildingSuccess(data.building[0], data.message));
-                 })
-               }
-               else{
-                 response.json().then(error => {
-                   dispatch(fetchBuildingFailed(error));
-                 })
-               }
-             })
+    // Returns a promise
+    return fetch(apiUrl + buildingId)
+      .then(response => {
+        console.log(response)
+        if (response.ok) {
+          response.json().then(data => {
+            dispatch(fetchBuildingSuccess(data.building[0], data.message));
+          })
+        }
+        else {
+          response.json().then(error => {
+            dispatch(fetchBuildingFailed(error));
+          })
+        }
+      })
 
   }
 }
 
 export const fetchBuildingRequest = () => {
   return {
-    type:'FETCH_BUILDING_REQUEST'
+    type: 'FETCH_BUILDING_REQUEST'
   }
 }
 
 
 //Sync action
-export const fetchBuildingSuccess = (building,message) => {
+export const fetchBuildingSuccess = (building, message) => {
   return {
     type: 'FETCH_BUILDING_SUCCESS',
     building: building,
@@ -144,63 +147,63 @@ export const fetchBuildingSuccess = (building,message) => {
 
 export const fetchBuildingFailed = (error) => {
   return {
-    type:'FETCH_BUILDING_FAILED',
+    type: 'FETCH_BUILDING_FAILED',
     error
   }
 }
 
 export const showEditModal = (buildingToEdit) => {
   return {
-    type:'SHOW_EDIT_MODAL',
-    building:buildingToEdit
+    type: 'SHOW_EDIT_MODAL',
+    building: buildingToEdit
   }
 }
 
 export const hideEditModal = () => {
   return {
-    type:'HIDE_EDIT_MODAL'
+    type: 'HIDE_EDIT_MODAL'
   }
 }
 
 export const editBuilding = (building) => {
-    return (dispatch) => {
-      dispatch(editBuildingRequest(building));
-      return fetch(apiUrl, {
-        method:'put',
-        body:building
-      }).then(response => {
-        if(response.ok){
-          response.json().then(data => {
-            dispatch(editBuildingSuccess(data.building, data.message));
-          })
-        }
-        else{
-          response.json().then(error => {
-            dispatch(editBuildingFailed(error));
-          })
-        }
-      })
-    }
+  return (dispatch) => {
+    dispatch(editBuildingRequest(building));
+    return fetch(apiUrl, {
+      method: 'put',
+      body: building
+    }).then(response => {
+      if (response.ok) {
+        response.json().then(data => {
+          dispatch(editBuildingSuccess(data.building, data.message));
+        })
+      }
+      else {
+        response.json().then(error => {
+          dispatch(editBuildingFailed(error));
+        })
+      }
+    })
+  }
 }
 
 export const editBuildingRequest = (building) => {
-   return {
-     type:'EDIT_BUILDING_REQUEST',
-     building
-   }
+  return {
+    type: 'EDIT_BUILDING_REQUEST',
+    building
+  }
 }
 
-export const editBuildingSuccess = (building,message) => {
+export const editBuildingSuccess = (building, message) => {
   return {
-    type:'EDIT_BUILDING_SUCCESS',
-    building:building,
-    message:message
+    type: 'EDIT_BUILDING_SUCCESS',
+    building: building,
+    message: message
   }
 }
 
 export const editBuildingFailed = (error) => {
   return {
-    type:'EDIT_BUILDING_FAILED',
+    type: 'EDIT_BUILDING_FAILED',
     error
   }
 }
@@ -208,15 +211,15 @@ export const editBuildingFailed = (error) => {
 export const deleteBuilding = (building) => {
   return (dispatch) => {
     dispatch(deleteBuildingRequest(building));
-    return fetch(apiUrl + building._id ,{
-      method:'delete'
+    return fetch(apiUrl + building._id, {
+      method: 'delete'
     }).then(response => {
-      if(response.ok){
+      if (response.ok) {
         response.json().then(data => {
           dispatch(deleteBuildingSuccess(data.message));
         })
       }
-      else{
+      else {
         response.json().then(error => {
           dispatch(deleteBuildingFailed(error));
         })
@@ -227,54 +230,55 @@ export const deleteBuilding = (building) => {
 }
 
 export const deleteBuildingRequest = (building) => {
-   return {
-     type:'DELETE_BUILDING_REQUEST',
-     building
-   }
+  return {
+    type: 'DELETE_BUILDING_REQUEST',
+    building
+  }
 }
 export const deleteBuildingSuccess = (message) => {
   return {
-    type:'DELETE_BUILDING_SUCCESS',
-    message:message
+    type: 'DELETE_BUILDING_SUCCESS',
+    message: message
   }
 }
 
 export const deleteBuildingFailed = (error) => {
   return {
-    type:'DELETE_BUILDING_FAILED',
+    type: 'DELETE_BUILDING_FAILED',
     error
   }
 }
 
 export const showDeleteModal = (buildingToDelete) => {
   return {
-    type:'SHOW_DELETE_MODAL',
-    building:buildingToDelete
+    type: 'SHOW_DELETE_MODAL',
+    building: buildingToDelete
   }
 }
 
 export const hideDeleteModal = () => {
   return {
-    type:'HIDE_DELETE_MODAL'
+    type: 'HIDE_DELETE_MODAL'
   }
 }
 
 /* Should add new calc point for parent building */
 export const addNewCalcPoint = (calcPoint) => {
-    
+
   return (dispatch) => {
     dispatch(addNewCalcPointRequest(calcPoint));
 
-    fetch(apiUrl +"/cp/" + calcPoint.get("parent"), {
-      method:'post',
+    fetch(apiUrl + "/cp/" + calcPoint.get("parent"), {
+      method: 'post',
       body: calcPoint,
     }).then(response => {
-      if(response.ok){
-        response.json().then(data => {console.log(data);
+      if (response.ok) {
+        response.json().then(data => {
+          console.log(data);
           dispatch(addNewCalcPointRequestSuccess(data.newCalcPoint, data.message))
         })
       }
-      else{
+      else {
         response.json().then(error => {
           dispatch(addNewCalcPointRequestFailed(error))
         })
@@ -290,11 +294,11 @@ export const addNewCalcPointRequest = (calcPoint) => {
   }
 }
 
-export const addNewCalcPointRequestSuccess = (calcPoint,message) => {
+export const addNewCalcPointRequestSuccess = (calcPoint, message) => {
   return {
     type: 'ADD_NEW_CP_REQUEST_SUCCESS',
-    calcPoint:calcPoint,
-    successMsg:message
+    calcPoint: calcPoint,
+    successMsg: message
   }
 }
 
@@ -309,15 +313,15 @@ export const editCalcPoint = (calcPointToEdit) => {
   return (dispatch) => {
     dispatch(editBuildingCalcPointRequest(calcPointToEdit));
     return fetch(apiUrl + "/cp/", {
-      method:'put',
-      body:calcPointToEdit
+      method: 'put',
+      body: calcPointToEdit
     }).then(response => {
-      if(response.ok){
+      if (response.ok) {
         response.json().then(data => {
           dispatch(editBuildingCalcPointSuccess(data.newCalcPoint, data.message));
         })
       }
-      else{
+      else {
         response.json().then(error => {
           dispatch(editBuildingCalcPointFailed(error));
         })
@@ -330,7 +334,7 @@ export const editCalcPoint = (calcPointToEdit) => {
 
 export const addCalcPointModal = () => {
   return {
-    type:'ADD_CP_MODAL'
+    type: 'ADD_CP_MODAL'
 
 
   }
@@ -338,60 +342,60 @@ export const addCalcPointModal = () => {
 
 export const hideCalcPointAddModal = () => {
   return {
-    type:'HIDE_CP_ADD_MODAL'
+    type: 'HIDE_CP_ADD_MODAL'
   }
 }
 
 
 export const hideCalcPointEditModal = () => {
   return {
-    type:'HIDE_CP_EDIT_MODAL'
+    type: 'HIDE_CP_EDIT_MODAL'
   }
 }
 
 export const showCalcPointEditModal = (calcPointToEdit) => {
   return {
-    type:'EDIT_CP_MODAL',
-    calcPointToEdit:calcPointToEdit
+    type: 'EDIT_CP_MODAL',
+    calcPointToEdit: calcPointToEdit
   }
 }
 
 
 export const editBuildingCalcPointRequest = (calcPointToEdit) => {
   return {
-    type:'EDIT_CP_REQUEST',
+    type: 'EDIT_CP_REQUEST',
     calcPointToEdit
   }
 }
 
-export const editBuildingCalcPointSuccess = (calcPointToEdit,message) => {
- return {
-   type:'EDIT_CP_SUCCESS',
-   calcPointToEdit:calcPointToEdit,
-   successMsg:message
- }
+export const editBuildingCalcPointSuccess = (calcPointToEdit, message) => {
+  return {
+    type: 'EDIT_CP_SUCCESS',
+    calcPointToEdit: calcPointToEdit,
+    successMsg: message
+  }
 }
 
 export const editBuildingCalcPointFailed = (error) => {
- return {
-   type:'EDIT_CP_FAILED',
-   error
- }
+  return {
+    type: 'EDIT_CP_FAILED',
+    error
+  }
 }
 
 
 export const deleteCalcPoint = (calcPoint) => {
   return (dispatch) => {
     dispatch(deleteCalcPointRequest(calcPoint));
-    return fetch(apiUrl + "/cp/" + calcPoint._id ,{
-      method:'delete'
+    return fetch(apiUrl + "/cp/" + calcPoint._id, {
+      method: 'delete'
     }).then(response => {
-      if(response.ok){
+      if (response.ok) {
         response.json().then(data => {
           dispatch(deleteCalcPointSuccess(data.message));
         })
       }
-      else{
+      else {
         response.json().then(error => {
           dispatch(deleteCalcPointFailed(error));
         })
@@ -402,35 +406,179 @@ export const deleteCalcPoint = (calcPoint) => {
 }
 
 export const deleteCalcPointRequest = (calcPoint) => {
-   return {
-     type:'DELETE_CP_REQUEST',
-     calcPoint
-   }
+  return {
+    type: 'DELETE_CP_REQUEST',
+    calcPoint
+  }
 }
 
 export const deleteCalcPointSuccess = (message) => {
   return {
-    type:'DELETE_CP_SUCCESS',
-    successMsg:message
+    type: 'DELETE_CP_SUCCESS',
+    successMsg: message
   }
 }
 
 export const deleteCalcPointFailed = (error) => {
   return {
-    type:'DELETE_CP_FAILED',
+    type: 'DELETE_CP_FAILED',
     error
   }
 }
 
 export const showCalcPointDeleteModal = (calcPoint) => {
   return {
-    type:'SHOW_DELETE_CP_MODAL',
-    calcPointToDelete:calcPoint
+    type: 'SHOW_DELETE_CP_MODAL',
+    calcPointToDelete: calcPoint
   }
 }
 
 export const hideCalcPointDeleteModal = () => {
   return {
-    type:'HIDE_DELETE_CP_MODAL'
+    type: 'HIDE_DELETE_CP_MODAL'
+  }
+}
+
+/*
+ * File upload: TODO: fix upload if many uploads are done in the row
+ */
+export const showFileUploadModal = (parentId) => {
+  if (parentId !== null) {
+    return {
+      type: 'SHOW_FILE_UPLOAD_MODAL',
+      fileParent: parentId
+    }
+  }
+}
+
+export const hideFileUploadModal = () => {
+  return {
+    type: 'HIDE_FILE_UPLOAD_MODAL'
+  }
+}
+
+export const addNewFileRequest = (file) => {
+  return {
+    type: 'ADD_NEW_FILE_REQUEST',
+    file
+  }
+}
+
+export const addNewFileRequestSuccess = (addedfile, parentobj, message) => {
+  return {
+    type: 'ADD_NEW_FILE_REQUEST_SUCCESS',
+    fileParent: parentobj,
+    file: addedfile,
+    successMsg: message
+  }
+}
+
+export const addNewFileFailed = (error) => {
+  return {
+    type: 'ADD_NEW_FILE_FAILED',
+    error
+  }
+}
+
+
+
+export const fileUpload = (file) => {
+
+  return (dispatch) => {
+    dispatch(addNewFileRequest(file));
+
+    fetch(apiUrl + "/files/", {
+      method: 'post',
+      body: file,
+
+    }).then(response => {
+      if (response.ok) {
+        response.json().then(data => {
+          dispatch(addNewFileRequestSuccess(data.newfile, data.updatedBuilding, data.message))
+        })
+      }
+      else {
+        response.json().then(error => {
+          dispatch(addNewFileFailed(error))
+        })
+      }
+    })
+  }
+}
+
+
+// File edits
+export const showFileEditModal = (fileToEdit) => {
+  if (fileToEdit !== null) {
+    return {
+      type: 'SHOW_FILE_EDIT_MODAL',
+      fileToEdit: fileToEdit
+    }
+  }
+}
+
+export const hideFileEditModal = () => {
+  return {
+    type: 'HIDE_FILE_EDIT_MODAL'
+  }
+}
+
+// File deletion
+export const showFileDeleteModal = (fileToDelete) => {
+  if (fileToDelete !== null) {
+    return {
+      type: 'SHOW_FILE_DELETE_MODAL',
+      fileToDelete: fileToDelete
+    }
+  }
+}
+
+export const hideFileDeleteModal = () => {
+  return {
+    type: 'HIDE_FILE_DELETE_MODAL'
+  }
+}
+
+export const deleteFile = (file) => {
+  return (dispatch) => {
+    dispatch(deleteFileRequest(file));
+    return fetch(apiUrl + "/files/" + file._id+"/"+file.parentId, {
+      method: 'delete'
+    }).then(response => {
+      if (response.ok) {
+        response.json().then(data => {
+          dispatch(deleteFileSuccess(data.objid, data.pid, data.message));
+        })
+      }
+      else {
+        response.json().then(error => {
+          dispatch(deleteFileFailed(error));
+        })
+      }
+    })
+
+  }
+}
+
+export const deleteFileRequest = (file) => {
+  return {
+    type: 'DELETE_FILE_REQUEST',
+    file
+  }
+}
+
+export const deleteFileSuccess = (objid, pid, message) => {
+  return {
+    type: 'DELETE_FILE_REQUEST_SUCCESS',
+    fileToDelete: objid,
+    fileParent: pid,
+    successMsg: message
+  }
+}
+
+export const deleteFileFailed = (error) => {
+  return {
+    type: 'DELETE_FILE_FAILED',
+    error
   }
 }

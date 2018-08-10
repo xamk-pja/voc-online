@@ -54,6 +54,7 @@ export default class App extends React.Component {
            <NavItem eventKey={1}>Koti</NavItem>
         </LinkContainer>
       </Nav>
+
       <Nav pullRight>
       <LinkContainer to={{ pathname: '/', query: {  } }} onClick={this.toggleAddBuilding}>
          <NavItem eventKey={1}>Lisää uusi rakennus</NavItem>

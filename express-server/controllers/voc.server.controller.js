@@ -1,24 +1,21 @@
 // ./express-server/controllers/voc.server.controller.js
-
 //import models
-
-
-import { CalcPoint, Building } from '../models/voc.server.building-model';
+import { CalcPoint, Building, GFS } from '../models/voc.server.building-model';
 
 export const getBuildings = (req, res) => {
-  Building.find().exec((err, buildings) => {
+  Building.find().populate('files').exec((err, buildings) => {
+
+    console.log("buildings found: "+buildings);
+
     if (err) {
       return res.json({ 'success': false, 'message': 'Virhe' });
     }
 
     return res.json({ 'success': true, 'message': 'Kohteet haettu onnistuneesti', buildings });
   });
-
-
 }
 
 export const addBuilding = (req, res) => {
-  console.log(req.body);
   const newBuilding = new Building(req.body);
   newBuilding.save((err, building) => {
     if (err) {
@@ -38,7 +35,7 @@ export const addNewCalcPoint = (req, res) => {
       console.log("err: " + err);
       return res.json({ 'success': false, 'message': 'Virhe' });
     }
-    
+
     const newCalcPoint = new CalcPoint(req.body);
     building.calcPoints.push(newCalcPoint);
 
@@ -47,7 +44,7 @@ export const addNewCalcPoint = (req, res) => {
         console.log("err: " + err);
         return res.json({ 'success': false, 'message': 'Virhe' });
       }
-      console.log("Building CalcPoint ObjectRef added for CalcPoint: "+newCalcPoint._id);
+      console.log("Building CalcPoint ObjectRef added for CalcPoint: " + newCalcPoint._id);
     });
 
     newCalcPoint.save((err, cp) => {
@@ -55,32 +52,9 @@ export const addNewCalcPoint = (req, res) => {
         console.log("err: " + err);
         return res.json({ 'success': false, 'message': 'Virhe' });
       }
-      return res.json({'success':true,'message':'Mittauspaikka lisätty onnistuneesti',newCalcPoint});
-    } );  
+      return res.json({ 'success': true, 'message': 'Mittauspaikka lisätty onnistuneesti', newCalcPoint });
+    });
   });
-
-
-
-  // newCalcPoint.save((err, newCalcPoint) => {
-  //   if (err) {
-  //     console.log("err: " + err);
-  //     return res.json({ 'success': false, 'message': 'Virhe' });
-  //   }
-
-  //   Building.findById(req.body.parent).;
-  // })
-
-  // Building.update({'_id':req.body.parent}, {'$push' : { calcPoints: {
-  //   'shortDesc':newCalcPoint.shortDesc,
-  //   'longDesc':newCalcPoint.longDesc
-  // }}}, function(err, calcPoint) {
-  //   if (err) {
-  //     console.log(err);
-  //     return res.json({'success':false,'message':'Virhe'});
-  //   }
-  //   console.log("Returning: "+newCalcPoint);
-  //   return res.json({'success':true,'message':'Mittauspaikka lisätty onnistuneesti',newCalcPoint});
-  // });
 }
 
 // Edit calc point for building
@@ -94,16 +68,6 @@ export const editCalcPoint = (req, res) => {
 
     return res.json({ 'success': true, 'message': 'Päivitettiin onnistuneesti', newCalcPoint });
   });
-
-  // CalcPoint.findOneAndUpdate({ _id:req.body.id }, updatedCP, { new:true }, (err,calcPoint) => {
-  //   if(err){
-  //     return res.json({'success':false,'message':'Virhe','error':err});
-  //   }
-
-  //   // console.log("Updated CalcPoint: "+calcPoint.shortDesc + " l: "+calcPoint.longDesc);
-
-  //   return res.json({'success':true,'message':'Päivitettiin onnistuneesti',calcPoint});
-  // })
 }
 
 export const deleteCalcPoint = (req, res) => {
@@ -113,7 +77,6 @@ export const deleteCalcPoint = (req, res) => {
     if (err) {
       return res.json({ 'success': false, 'message': 'Virhe' });
     }
-
     console.log("Deletion succesful of mittauspaikka ID: " + req.params.id);
     return res.json({ 'success': true, 'message': 'Mittauspaikka poistettu onnistuneesti.' });
   })
@@ -133,12 +96,12 @@ export const updateBuilding = (req, res) => {
 }
 
 export const getBuilding = (req, res) => {
-  Building.find({ _id: req.params.id }).populate('calcPoints').exec((err, building) => {
+  Building.find({ _id: req.params.id }).populate('calcPoints').populate('files').exec((err, building) => {
     if (err) {
       return res.json({ 'success': false, 'message': 'Virhe' });
     }
 
-    console.log("it's my building: "+building);
+    console.log("it's my building: " + building);
 
     if (building.length) {
       return res.json({ 'success': true, 'message': 'Rakennus haettu onnistuneesti id:llä', building });
@@ -158,3 +121,4 @@ export const deleteBuilding = (req, res) => {
     return res.json({ 'success': true, 'message': building.todoText + ' deleted successfully' });
   })
 }
+

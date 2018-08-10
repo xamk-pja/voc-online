@@ -2,6 +2,18 @@ import React from 'react';
 
 // Get enum types for building types from schema
 
+export const getLabelFor = (param, selected) => {
+  var options = getTypesFor(param);
+
+  console.log(options);
+  for ( var i in options ) {
+    if ( options[i].key === selected ) {
+      return options[i].props.children;
+    }
+  }
+  return null;
+}
+
 // If you've time, add these mappings to schema and figure out how to render these using react from mongoose..
 export const getTypesFor = (paramType) => {
     let items = [];        
@@ -92,7 +104,7 @@ export const getTypesFor = (paramType) => {
       items.push((<option key='Muu' value='Muu'>Muu</option>));
 
     }
-    else if (paramType === 'buildingMittalaitteet') {
+    else if (paramType === 'usedMetrics') {
       items.push((<option key='Andersen' value='Andersen'>Andersen</option>));
       items.push((<option key='TSIAirflowJaPID' value='TSIAirflowJaPID'>TSI Airflow ja PID</option>));
       items.push((<option key='GCIMS' value='GCIMS'>GC-IMS</option>));

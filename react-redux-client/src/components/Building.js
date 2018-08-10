@@ -7,6 +7,7 @@ import React from 'react';
 import { Alert, Glyphicon, Button, Modal } from 'react-bootstrap';
 import CalcPointAddForm from "./CalcPointAddForm";
 import CalcPointEditForm from './CalcPointEditForm';
+import { Link } from 'react-router';
 
 export default class Building extends React.Component {
   constructor(props) {
@@ -99,6 +100,7 @@ export default class Building extends React.Component {
     const calcPointToEdit = buildingState.calcPointToEdit;
     const calcPointToAdd = buildingState.calcPointToAdd;
     const calcPoints = buildingState.calcPoints;
+    const building = buildingState.building;
 
     return (
       <div className="buildingDetail">
@@ -115,7 +117,24 @@ export default class Building extends React.Component {
             <p><b>Rakennuksen tyyppi: </b>{buildingState.building.buildingType}</p>
             <p><b>Rakennuksen ID: </b>{buildingState.building._id}</p>
 
-            <p>Lisää uusi mittauspaikka: <Button type="button" className="btn btn-primary" onClick={this.showAddCalcPointModal}><Glyphicon glyph="pencil" /></Button></p>
+            <p> <b>Rakennuksen tiedostot:</b><br /><br />
+                <Button onClick={() => this.showFileUploadModal(building._id)} bsStyle="success" bsSize="xsmall"><Glyphicon glyph="plus" /> Lisää tiedosto</Button>
+                  <br />
+                  {building.files.map((file, i) =>
+                    <span>
+                      <a href="#" onClick={() => this.downloadFile(file._id)}>{file.originalname}</a><span>&nbsp;
+                      <Button onClick={() => this.showFileEditModal(file)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="plus" /></Button>
+                      <Button onClick={() => this.showFileDeleteModal(file)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button>
+                      <br />
+                      &nbsp;{file.fileDesc}
+                         </span>
+                      <br />
+                    </span>
+                  )}
+            </p>
+            <hr />
+            <h4><b>Rakennuksen mittauspaikat:</b></h4>
+            <p>Lisää uusi mittauspaikka: <Button type="button" className="btn btn-primary" bsStyle="success" onClick={this.showAddCalcPointModal} bsSize="xsmall"><Glyphicon glyph="plus" /></Button></p>
 
             {buildingState.building.calcPoints &&
               <table className="table booksTable">
@@ -126,14 +145,9 @@ export default class Building extends React.Component {
                   {calcPoints.map((calcPoint, i) => <tr key={i}>
                     <td>{calcPoint.shortDesc}</td>
                     <td>{calcPoint.longDesc}</td>
-                    <td>Loopppaa mittaustulokset ID:lle: {calcPoint._id}</td>
+                    <td className="textCenter"><Link to={`/results/${calcPoint._id}`}>Avaa</Link> </td>
                     <td className="textCenter"><Button onClick={() => this.showCalcPointEditModal(calcPoint)} bsStyle="primary" bsSize="xsmall"><Glyphicon glyph="edit" /></Button></td>
                     <td className="textCenter"><Button onClick={() => this.showCalcPointDeleteModal(calcPoint)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button></td>
-
-
-                    {/* CONTINUE FROM HERE: implement edit and delete for calc points + then logic to add the actual results. <td className="textCenter"><Button onClick={() => this.showEditModal(building)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="pencil" /></Button></td>
-                  <td className="textCenter"><Link to={`/${building._id}`}>Lisätiedot</Link> </td>
-                  <td className="textCenter"><Button onClick={() => this.showDeleteModal(building)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button></td> */}
                   </tr>)
                   }
                 </tbody>

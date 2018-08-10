@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+mongoose.set('debug', true);
 
 var CalcPointSchema = mongoose.Schema({
 // CalcPointSchema.add({
@@ -10,15 +11,8 @@ var CalcPointSchema = mongoose.Schema({
     default: Date.now
   },
 
-  measurements: [{
-    createdAt: {
-      type: Date,
-      default: Date.now
-    },
-
-    usedMetrics: String,
-    measuredParams: String
-  }]
+  results: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Results' }],
+  files: [{ type: mongoose.Schema.Types.ObjectId, ref: 'GFS'  }]
 });
 
 var BuildingSchema = mongoose.Schema({
@@ -32,19 +26,43 @@ var BuildingSchema = mongoose.Schema({
   buildingType: String,
   todoDesc: String,
 
+
   createdAt: {
     type: Date,
     default: Date.now
   },
-  calcPoints: [{ type: mongoose.Schema.Types.ObjectId, ref: 'CalcPoint' }]
+  calcPoints: [{ type: mongoose.Schema.Types.ObjectId, ref: 'CalcPoint' }],
+  files: [{ type: mongoose.Schema.Types.ObjectId, ref: 'GFS'  }]
 });
 
-mongoose.set('debug', true);
+var MeasurementResultsSchema = mongoose.Schema({
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+
+  usedMetrics: String,
+  parentId: String,
+
+  files: [{ type: mongoose.Schema.Types.ObjectId, ref: 'GFS'  }]
+});
+
+
 
 var Building = mongoose.model('Building', BuildingSchema);
 var CalcPoint = mongoose.model('CalcPoint', CalcPointSchema);
+var Result = mongoose.model('Results', MeasurementResultsSchema);
+
+// Schema for GridFS files
+var GFS = mongoose.model("GFS", new mongoose.Schema({
+  originalname : String,
+  parentId : String,
+  fileDesc : String
+}, {strict: false}), "fs.files" );
 
 module.exports = {
   CalcPoint,
-  Building
+  Building,
+  GFS,
+  Result
 }
