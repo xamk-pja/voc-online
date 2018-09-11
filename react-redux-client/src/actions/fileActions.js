@@ -41,9 +41,7 @@ export const showFileUploadModal = (parentId) => {
     }
   }
   
-  
   export const fileUpload = (file) => {
-  
     return (dispatch) => {
       dispatch(addNewFileRequest(file));
   
@@ -54,7 +52,7 @@ export const showFileUploadModal = (parentId) => {
       }).then(response => {
         if (response.ok) {
           response.json().then(data => {
-            dispatch(addNewFileRequestSuccess(data.newfile, data.updatedBuilding, data.message))
+            dispatch(addNewFileRequestSuccess(data.newfile, data.updatedObj, data.message))
           })
         }
         else {

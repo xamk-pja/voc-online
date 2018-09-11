@@ -1,9 +1,8 @@
 import React from 'react';
 import { Button, ControlLabel, FormControl, FormGroup } from 'react-bootstrap';
 import { getTypesFor } from './utils.js';
-import { handleChange } from './utils.js';
-var DatePicker = require("react-16-bootstrap-date-picker");
 
+var DatePicker = require("react-16-bootstrap-date-picker");
 const ResultAddForm = (props) => {
   return (
     <form className="form form-horizontal" id="ResultAddForm" onSubmit={props.addResult}>
@@ -11,7 +10,6 @@ const ResultAddForm = (props) => {
         <h3 className="centerAlign">Lisää mittaustulos mittauspaikalle</h3>
         <div className="col-md-12">
         <input type="hidden" value={props.calcPointId} name="parentId" />
-
           <FormGroup>
             <ControlLabel>Mittauksen tulos: </ControlLabel>
             <FormControl componentClass="select" placeholder="Valitse" name="usedMetrics">
@@ -20,13 +18,10 @@ const ResultAddForm = (props) => {
               };            
             </FormControl>
           </FormGroup>
-
           <FormGroup>
             <ControlLabel>Mittauksen ajankohta: </ControlLabel>
-            <DatePicker id="example-datepicker" onChange={this.handleChange} />
-          </FormGroup>
-
-          
+            <DatePicker id="resultdate" name="resultdate" value={props.addedResult && props.addedResult.resultdate} />
+          </FormGroup>          
         </div>
       </div>
       <FormGroup>

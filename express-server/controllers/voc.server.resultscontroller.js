@@ -8,7 +8,16 @@ import { CalcPoint, Building, GFS, Result } from '../models/voc.server.building-
 export const getResultsForCalcPoint = (req, res) => {
 
   console.log(req.params.id);
-  CalcPoint.findById(req.params.id).populate('results').populate('files').exec((err, calcPoint) => {
+  CalcPoint.findById(req.params.id)
+          .populate({
+            path:'results',
+            model:'Results',
+            populate: {
+              path:'files',
+              
+              model:'GFS'
+            }
+          }).exec((err, calcPoint) => {
     console.log("Results found: " + calcPoint.results + " for calculation point: " + req.params.id);
 
     if (err) {

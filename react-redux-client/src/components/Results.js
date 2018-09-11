@@ -11,6 +11,8 @@ import ResultAddForm from './ResultAddForm';
 import ResultEditForm from './ResultEditForm';
 import { getLabelFor } from './utils.js';
 import { browserHistory } from 'react-router';
+import FileUploadForm from './FileUploadForm';
+import FileEditForm from './FileEditForm';
 
 export default class Results extends React.Component {
   constructor(props) {
@@ -24,6 +26,10 @@ export default class Results extends React.Component {
     this.submitEditResult = this.submitEditResult.bind(this);
     this.hideDeleteResultModal = this.hideDeleteResultModal.bind(this);
     this.confirmDeleteResult = this.confirmDeleteResult.bind(this);
+    this.hideFileUploadModal = this.hideFileUploadModal.bind(this);
+    this.hideFileEditModal = this.hideFileEditModal.bind(this);
+    this.hideFileDeleteModal = this.hideFileDeleteModal.bind(this);
+    this.confirmDeleteFile = this.confirmDeleteFile.bind(this);
   }
 
   componentDidMount() {
@@ -58,6 +64,87 @@ export default class Results extends React.Component {
     this.props.mappedDeleteResult(this.props.mappedBuildingState.resultToDelete);
   }
 
+  /**
+ * FILE RELATED FUNCTIONS
+ * 
+ * DUPLICATED IN Buildings.js - TODO: refactor duplicates
+ */
+
+  // Action calls this method when submitting data
+  fileUpload = (e) => {
+    e.preventDefault();
+    const fileForm = document.getElementById('FileUploadForm');
+    const file = fileForm['file'].files[0];
+
+    if (file !== "") {
+      const data = new FormData();
+      data.append('fileDesc', fileForm.fileDesc.value);
+      data.append('file', file);
+      data.append('filename', file.name);
+      data.append('parentId', fileForm.parentId.value);
+      this.props.mappedFileUpload(data);
+    }
+    else {
+      return;
+    }
+  }
+
+  // Edit file
+  fileEdit = (e) => {
+    e.preventDefault();
+    const fileForm = document.getElementById('FileEditForm');
+    const file = fileForm.file;
+
+    if (file !== "") {
+      const data = new FormData();
+      data.append('fileDesc', fileForm.fileDesc.value);
+      data.append('id', fileForm.id.value);
+      this.props.mappedFileEdit(data);
+    }
+    else {
+      return;
+    }
+  }
+
+  downloadFile = (fileId) => {
+    // document.preventDefault;
+    const url = `http://localhost:3001/api/files/${fileId}`;
+    window.open(url, '_blank');
+  }
+
+  showFileUploadModal(parentId) {
+    this.props.mappedFileUploadModal(parentId);
+  }
+
+  hideFileUploadModal() {
+    this.props.mappedHideFileUploadModal();
+  }
+
+  showFileEditModal(file) {
+    this.props.mappedFileEditModal(file);
+  }
+
+  hideFileEditModal() {
+    this.props.mappedHideFileEditModal();
+  }
+
+  hideFileDeleteModal() {
+    this.props.mappedHideFileDeleteModal();
+  }
+
+  showFileDeleteModal(file) {
+    this.props.mappedShowFileDeleteModal(file);
+  }
+
+  confirmDeleteFile() {
+    this.props.mappedDeleteFile(this.props.mappedBuildingState.fileToDelete);
+  }
+
+  /**
+  * FILE RELATED FUNCTIONS ENDS
+  */
+
+
   submitAddResult(e) {
     e.preventDefault();
     const addResultForm = document.getElementById('ResultAddForm');
@@ -65,6 +152,7 @@ export default class Results extends React.Component {
       const data = new FormData();
       data.append('parentId', addResultForm.parentId.value);
       data.append('usedMetrics', addResultForm.usedMetrics.value);
+      data.append('resultdate', addResultForm.resultdate.value);
       this.props.mappedAddResultForCalcPoint(data);
     }
     else {
@@ -79,6 +167,7 @@ export default class Results extends React.Component {
       const data = new FormData();
       data.append('id', editForm.id.value);
       data.append('usedMetrics', editForm.usedMetrics.value);
+      data.append('resultdate', editForm.resultdate.value);
       this.props.mappedEditResult(data);
     }
     else {
@@ -91,11 +180,11 @@ export default class Results extends React.Component {
 
     // these values changes according to the state - keep that in mind!
     const buildingState = this.props.mappedBuildingState;
-    const calcPoint = buildingState.calcPoint;
+    // const calcPoint = buildingState.calcPoint;
     const addedResult = buildingState.addedResult;
     const results = buildingState.results;
     const resultToEdit = buildingState.resultToEdit;
-    const building = buildingState.building;
+    // const building = buildingState.building;
 
     return (
       <div className="resultsDetail">
@@ -121,20 +210,21 @@ export default class Results extends React.Component {
             {results && results.length > 0 && !buildingState.isFetching &&
               <table className="table booksTable">
                 <thead>
-                  <tr><th>Käytetty mittalaite</th><th className="textCenter">Näytä</th><th className="textCenter">Muokkaa</th><th className="textCenter">Poista kohde</th><th className="textCenter">Tiedostot</th></tr>
+                  <tr><th>Käytetty mittalaite</th><th>Mittauksen ajankohta</th><th className="textCenter">Näytä</th><th className="textCenter">Muokkaa</th><th className="textCenter">Poista kohde</th><th className="textCenter">Tiedostot</th></tr>
                 </thead>
                 <tbody>
                   {results.map((result, i) => <tr key={i}>
                     <td>{getLabelFor('usedMetrics', result.usedMetrics)}</td>
+                    <td className="textCenter">{result.resultdate && new Date(result.resultdate).toLocaleDateString('fi-FI')}</td>
                     <td className="textCenter"><Link to={`/${result._id}`}>TODO</Link> </td>
-                    <td className="textCenter"><Button onClick={() => this.showEditResultModal(result)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="pencil" /></Button></td>
+                    <td className="textCenter"><Button onClick={() => this.showEditResultModal(result)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="edit" /></Button></td>
                     <td className="textCenter"><Button onClick={() => this.showDeleteResultModal(result)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button></td>
                     <td className="textCenter"><Button onClick={() => this.showFileUploadModal(result._id)} bsStyle="success" bsSize="xsmall"><Glyphicon glyph="plus" /> Lisää tiedosto</Button>
                       <br />
                       {result.files.map((file, i) =>
                         <span>
-                          <a href="#" onClick={() => this.downloadFile(file._id)}>{file.originalname}</a><span>&nbsp;
-                      <Button onClick={() => this.showFileEditModal(file)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="plus" /></Button>
+                          <a href onClick={(e) => {e.preventDefault(); this.downloadFile(file._id)}} style={{cursor:'pointer'}}>{file.originalname}</a><span>&nbsp;
+                            <Button onClick={() => this.showFileEditModal(file)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="edit" /></Button>
                             <Button onClick={() => this.showFileDeleteModal(file)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button>
                           </span>
                           <br />
@@ -271,6 +361,136 @@ export default class Results extends React.Component {
             }
             {buildingState.successMsg && !buildingState.isFetching &&
               <Button onClick={this.hideDeleteResultModal}>Sulje</Button>
+            }
+          </Modal.Footer>
+        </Modal>
+
+        {
+          /**
+            FILE RELATED MODALS - TODO: HOW TO MAKE THEM REUSABLE?
+
+            DUPLICATES IN Buildings.js
+           */
+        }
+        <Modal
+          show={buildingState.showFileUploadModal}
+          onHide={this.hideFileUploadModal}
+          container={this}
+          aria-labelledby="contained-modal-title"
+        >
+
+          <Modal.Header closeButton>
+            <Modal.Title id="contained-modal-title">Tiedosto</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="col-md-12">
+              {buildingState.showFileUploadModal &&
+                <FileUploadForm parentId={buildingState.fileParent} submit={this.fileUpload} />
+              }
+
+              {buildingState.showFileUploadModal && buildingState.isFetching &&
+                <Alert bsStyle="info">
+                  <strong>Päivitetään...... </strong>
+                </Alert>
+              }
+              {buildingState.showFileUploadModal && !buildingState.isFetching && buildingState.error &&
+                <Alert bsStyle="danger">
+                  <strong>Epäonnistui. {buildingState.error} </strong>
+                </Alert>
+              }
+              {buildingState.successMsg &&
+                <Alert bsStyle="success">
+                  {buildingState.successMsg} mittauspaikalle.
+              </Alert>
+              }
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.hideFileUploadModal}>Sulje</Button>
+          </Modal.Footer>
+        </Modal>
+
+        <Modal
+          show={buildingState.showFileEditModal}
+          onHide={this.hideFileEditModal}
+          container={this}
+          aria-labelledby="contained-modal-title"
+        >
+
+          <Modal.Header closeButton>
+            <Modal.Title id="contained-modal-title">Muokkaa tiedoston lisätietoja</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="col-md-12">
+              {buildingState.showFileEditModal &&
+                <FileEditForm file={buildingState.fileToEdit} submit={this.fileEdit} />
+              }
+
+              {buildingState.showFileEditModal && buildingState.isFetching &&
+                <Alert bsStyle="info">
+                  <strong>Päivitetään...... </strong>
+                </Alert>
+              }
+              {buildingState.showFileEditModal && !buildingState.isFetching && buildingState.error &&
+                <Alert bsStyle="danger">
+                  <strong>Epäonnistui. {buildingState.error} </strong>
+                </Alert>
+              }
+              {buildingState.successMsg &&
+                <Alert bsStyle="success">
+                  {buildingState.successMsg} mittauspaikalle.
+              </Alert>
+              }
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.hideFileEditModal}>Sulje</Button>
+          </Modal.Footer>
+        </Modal>
+
+        {/* Modal for deleting file */}
+        <Modal
+          show={buildingState.showFileDeleteModal}
+          onHide={this.hideFileDeleteModal}
+          container={this}
+          aria-labelledby="contained-modal-title"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="contained-modal-title">Poista tiedosto</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {buildingState.fileToDelete && !buildingState.error && !buildingState.isFetching &&
+              <Alert bsStyle="warning">
+                Oletko varma, että haluat poistaa tiedoston <strong>{buildingState.fileToDelete.originalname} </strong> ?
+              </Alert>
+            }
+            {buildingState.fileToDelete && buildingState.error &&
+              <Alert bsStyle="warning">
+                Epäonnistui. <strong>{buildingState.error} </strong>
+              </Alert>
+            }
+
+            {buildingState.fileToDelete && !buildingState.error && buildingState.isFetching &&
+              <Alert bsStyle="success">
+                <strong>Poistetaan.... </strong>
+              </Alert>
+            }
+
+            {!buildingState.fileToDelete && !buildingState.error && !buildingState.isFetching &&
+              <Alert bsStyle="success">
+                Tiedosto <strong>{buildingState.successMsg} </strong>
+              </Alert>
+            }
+          </Modal.Body>
+          <Modal.Footer>
+            {!buildingState.successMsg && !buildingState.isFetching &&
+              <div>
+                <Button onClick={this.confirmDeleteFile}>Kyllä</Button>
+                <Button onClick={this.hideFileDeleteModal}>Ei</Button>
+              </div>
+            }
+            {buildingState.successMsg && !buildingState.isFetching &&
+              <Button onClick={this.hideFileDeleteModal}>Sulje</Button>
             }
           </Modal.Footer>
         </Modal>

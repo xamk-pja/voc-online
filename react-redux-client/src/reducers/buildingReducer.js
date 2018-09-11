@@ -686,7 +686,7 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         results: action.results
       }
 
-    case 'FETCH_BUILDINGS_FAILED':
+    case 'FETCH_RESULTS_FAILED':
       return {
         ...currentState,
         buildings: currentState.buildings,
@@ -837,8 +837,8 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         error: null,
         successMsg: action.message,
         showEditResultModal: true,
-        addedResult: action.addedResult,
-        resultToEdit: currentState.resultToEdit,
+        addedResult: null,
+        resultToEdit: action.result,
         calcPoint: currentState.calcPoint,
         results: updatedResults
       }
@@ -952,6 +952,7 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         buildings: currentState.buildings,
         building: currentState.building,
         calcPoints: currentState.calcPoints,
+        results: currentState.results,
         isFetching: false,
         error: null,
         successMsg: null,
@@ -965,6 +966,7 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         buildings: currentState.buildings,
         building: currentState.building,
         calcPoints: currentState.calcPoints,
+        results: currentState.results,
         isFetching: true,
         error: null,
         successMsg: null,
@@ -986,11 +988,35 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         }
       })
 
+      const fileUpdatedCalcPoints = currentState.calcPoints.map((cp) => {
+        if (cp._id === action.fileParent._id) {
+          cp.files.push(action.file);
+          console.log(action.file._id);
+          return cp;
+        } else {
+          return cp;
+        }
+      })
+      var fileUpdatedResults = [];
+      if (currentState.results) {
+        fileUpdatedResults = currentState.results.map((result) => {
+        if (result._id === action.fileParent._id) {
+          result.files.push(action.file);
+
+          console.log(action.file._id);
+
+          return result;
+        } else {
+          return result;
+        }
+      })
+    }
       return {
         ...currentState,
         buildings: fileUpdatedBuildings,
         building: currentState.building,
-        calcPoints: currentState.calcPoints,
+        calcPoints: fileUpdatedCalcPoints,
+        results: fileUpdatedResults,
         isFetching: false,
         error: null,
         successMsg: action.successMsg,
@@ -1004,6 +1030,7 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         buildings: currentState.buildings,
         building: currentState.building,
         calcPoints: currentState.calcPoints,
+        results: currentState.results,
         isFetching: false,
         error: null,
         successMsg: null,
@@ -1017,6 +1044,7 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         buildings: currentState.buildings,
         building: currentState.building,
         calcPoints: currentState.calcPoints,
+        results: currentState.results,
         isFetching: false,
         error: null,
         successMsg: null,
@@ -1034,6 +1062,7 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         buildings: currentState.buildings,
         building: currentState.building,
         calcPoints: currentState.calcPoints,
+        results: currentState.results,
         isFetching: false,
         error: null,
         successMsg: null,
@@ -1046,6 +1075,7 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         buildings: currentState.buildings,
         building: currentState.building,
         calcPoints: currentState.calcPoints,
+        results: currentState.results,
         isFetching: false,
         error: null,
         successMsg: null,
@@ -1059,6 +1089,7 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         buildings: currentState.buildings,
         building: currentState.building,
         calcPoints: currentState.calcPoints,
+        results: currentState.results,
         isFetching: true,
         error: null,
         successMsg: null,
@@ -1083,12 +1114,50 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         }
         return building
       })
+      // this is again stupid to get the collection of updated objects in 3 separate same kind of functions
+      const fileUpdatedCPsEdit = currentState.calcPoints.map((cp) => {
+        if (cp._id === action.fileParent) {
+          const updatedFiles = cp.files.map((file) => {
+            if (file._id !== action.fileToEdit._id) {
+              //This is not the item we care about, keep it as is
+              return file;
+            }
+            //Otherwise, this is the one we want to return an updated value
+            return { ...file, ...action.fileToEdit }
+          })
+
+          cp.files = updatedFiles;
+          return cp;
+        }
+        return cp
+      })
+      // this is again stupid to get the collection of updated objects in 3 separate same kind of functions
+      var fileUpdatedResultsEdit = [];
+      if ( currentState.results) {
+        fileUpdatedResultsEdit = currentState.results.map((result) => {
+        if (result._id === action.fileParent) {
+          const updatedFiles = result.files.map((file) => {
+            if (file._id !== action.fileToEdit._id) {
+              //This is not the item we care about, keep it as is
+              return file;
+            }
+            //Otherwise, this is the one we want to return an updated value
+            return { ...file, ...action.fileToEdit }
+          })
+
+          result.files = updatedFiles;
+          return result;
+        }
+        return result
+      })
+      }
 
       return {
         ...currentState,
         buildings: fileUpdatedBuildingsEdit,
         building: currentState.building,
-        calcPoints: currentState.calcPoints,
+        calcPoints: fileUpdatedCPsEdit,
+        results: fileUpdatedResultsEdit,
         isFetching: false,
         error: null,
         successMsg: action.successMsg,
@@ -1102,6 +1171,7 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         buildings: currentState.buildings,
         building: currentState.building,
         calcPoints: currentState.calcPoints,
+        results: currentState.results,
         isFetching: false,
         error: null,
         successMsg: null,
@@ -1120,6 +1190,7 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         buildings: currentState.buildings,
         building: currentState.building,
         calcPoints: currentState.calcPoints,
+        results: currentState.results,
         isFetching: false,
         error: null,
         successMsg: null,
@@ -1132,6 +1203,7 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         buildings: currentState.buildings,
         building: currentState.building,
         calcPoints: currentState.calcPoints,
+        results: currentState.results,
         isFetching: false,
         error: null,
         successMsg: null,
@@ -1145,6 +1217,7 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         buildings: currentState.buildings,
         building: currentState.building,
         calcPoints: currentState.calcPoints,
+        results: currentState.results,
         isFetching: true,
         error: null,
         successMsg: null,
@@ -1171,6 +1244,7 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         ...currentState,
         buildings: fileRemoveUpdatedBuildings,
         building: currentState.building,
+        results: currentState.results,
         calcPoints: currentState.calcPoints,
         isFetching: false,
         error: null,
@@ -1183,6 +1257,7 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         ...currentState,
         buildings: currentState.buildings,
         building: currentState.building,
+        results: currentState.results,
         calcPoints: currentState.calcPoints,
         isFetching: false,
         error: null,
@@ -1190,14 +1265,8 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         showFileDeleteModal: true,
         fileParent: action.fileToDelete
       }
-
-
     default:
       return currentState;
-
-
-
-
   }
 }
 

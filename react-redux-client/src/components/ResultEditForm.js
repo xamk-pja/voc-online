@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, ControlLabel, FormControl, FormGroup } from 'react-bootstrap';
 import { getTypesFor } from './utils.js';
+var DatePicker = require("react-16-bootstrap-date-picker");
 
 const ResultEditForm = (props) => {
   return (
@@ -8,14 +9,19 @@ const ResultEditForm = (props) => {
       <div className="row">
         <h3 className="centerAlign">Muokkaa mittaustulosta</h3>
         <div className="col-md-12">
-        <input type="hidden" value={props.resultToEdit._id} name="id" />
+          <input type="hidden" value={props.resultToEdit._id} name="id" />
           <FormGroup>
             <ControlLabel>Käytetty mittalaite: </ControlLabel>
             <FormControl componentClass="select" placeholder="Valitse" name="usedMetrics" defaultValue={props.resultToEdit.usedMetrics}>
               {
                 getTypesFor('usedMetrics')
-              };            
+              };
             </FormControl>
+          </FormGroup>
+
+          <FormGroup>
+            <ControlLabel>Mittauksen ajankohta: </ControlLabel>
+            <DatePicker id="resultdate" name="resultdate" value={props.resultToEdit.resultdate} />
           </FormGroup>
         </div>
       </div>

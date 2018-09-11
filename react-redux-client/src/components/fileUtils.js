@@ -34,3 +34,12 @@ export const fileEdit = (e) => {
     return;
   }
 }
+
+/**
+ * TODO: get the server root url dynamically
+ * @param {} fileId 
+ */
+export const downloadFile = (fileId) => {
+  const url = `http://localhost:3001/api/files/${fileId}`;
+  window.open(url, '_blank');
+}

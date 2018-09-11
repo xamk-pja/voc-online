@@ -42,6 +42,7 @@ var MeasurementResultsSchema = mongoose.Schema({
   },
 
   usedMetrics: String,
+  resultdate: Date,
   parentId: String,
 
   files: [{ type: mongoose.Schema.Types.ObjectId, ref: 'GFS'  }]

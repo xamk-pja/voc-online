@@ -1,6 +1,6 @@
 // ./react-redux-client/src/components/App.js
 import React from 'react';
-import { Navbar,Nav,NavItem } from 'react-bootstrap';
+import { Navbar,Nav,NavItem,Button,FormGroup,FormControl } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import './App.css';
 import BuildingForm from './BuildingForm';
@@ -54,7 +54,12 @@ export default class App extends React.Component {
            <NavItem eventKey={1}>Koti</NavItem>
         </LinkContainer>
       </Nav>
-
+      <Navbar.Form pullLeft>
+        <FormGroup>
+          <FormControl type="text" placeholder="Hae" />
+        </FormGroup>{' '}
+        <Button type="submit">Hae</Button>
+      </Navbar.Form>
       <Nav pullRight>
       <LinkContainer to={{ pathname: '/', query: {  } }} onClick={this.toggleAddBuilding}>
          <NavItem eventKey={1}>Lisää uusi rakennus</NavItem>

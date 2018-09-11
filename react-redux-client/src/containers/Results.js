@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import * as resultsActions from '../actions/resultsActions';
+import * as fileActions from '../actions/fileActions';
 import Results from '../components/Results';
 
 // map state from store to props
@@ -23,15 +24,17 @@ const mapDispatchToProps = (dispatch) => {
     mappedEditResult: (result) => dispatch(resultsActions.editResult(result)),
     mappedShowDeleteResultModal: (resultToDelete) => dispatch(resultsActions.showDeleteResultModal(resultToDelete)),
     mappedHideDeleteResultModal: () => dispatch(resultsActions.hideDeleteResultModal()),
-    mappedDeleteResult: (result) => dispatch(resultsActions.deleteResult(result))
+    mappedDeleteResult: (result) => dispatch(resultsActions.deleteResult(result)),
 
-    // mappedfetchBuildingById: bid => dispatch(vocActions.fetchBuildingById(bid)),
-    // mappedEditBuildingCalcPoint: bid => dispatch(vocActions.editBuildingCalcPoint(bid)),
-    // addCalcPointModal: () => dispatch(vocActions.addCalcPointModal()),
-    // mappedhideCPModal: () => dispatch(vocActions.hideCalcPointEditModal()),
-    // mappedDeleteBuilding: bid => dispatch(vocActions.deleteBuilding(bid)),
-    // mappedshowDeleteModal: bid => dispatch(vocActions.showDeleteModal(bid)),
-    // mappedhideDeleteModal: () => dispatch(vocActions.hideDeleteModal())
+    mappedFileUploadModal: parentId => dispatch(fileActions.showFileUploadModal(parentId)),
+    mappedHideFileUploadModal: () => dispatch(fileActions.hideFileUploadModal()),
+    mappedFileEditModal: fileToEdit => dispatch(fileActions.showFileEditModal(fileToEdit)),
+    mappedHideFileEditModal: () => dispatch(fileActions.hideFileEditModal()),
+    mappedShowFileDeleteModal: fileToDelete => dispatch(fileActions.showFileDeleteModal(fileToDelete)),
+    mappedHideFileDeleteModal: () => dispatch(fileActions.hideFileDeleteModal()),
+    mappedDeleteFile: fileToDelete => dispatch(fileActions.deleteFile(fileToDelete)),
+    mappedFileUpload: file => dispatch(fileActions.fileUpload(file)),
+    mappedFileEdit: file => dispatch(fileActions.fileEdit(file))
   }
 }
 

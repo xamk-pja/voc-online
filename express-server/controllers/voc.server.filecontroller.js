@@ -16,7 +16,7 @@ db.open(function (err) {
 });
 
 //import models
-import { CalcPoint, Building, GFS } from '../models/voc.server.building-model';
+import { CalcPoint, Building, GFS, Result } from '../models/voc.server.building-model';
 
 /**
  * Upload file - save additional metadata. Original file is already saved in GridFS when this route is called
@@ -50,42 +50,66 @@ export const uploadFile = (req, res) => {
   });
 
   Building.findOne({ '_id': parentId }, function (err, building) {
-    console.log("Found an object to link the file to: " + parentId);
-    if (err) {
-      console.log("err: " + err);
-      return res.json({ 'success': false, 'message': 'Object not found!' });
+    if (building) {
+      console.log("Found a Building object to link the file to: " + parentId);
+      updateParentObject(building, file, res);
     }
-
-    building.files.push(file.id);
-
-    console.log('Pushing file id: ' + file.id + ' for parent: ' + building._id);
-
-    building.save((err, updatedBuilding) => {
+    // if not found, moving to CalcPoint
+    CalcPoint.findOne({ '_id': parentId }, function (err, cp) {
+      if (cp) {
+        console.log("Found a CalcPoint object to link the file to: " + parentId);
+        updateParentObject(cp, file, res);
+      }
+      // if not found, moving to Result
+      Result.findOne({ '_id': parentId }, function (err, result) {
+        if (result) {
+          console.log("Found an Result object to link the file to: " + parentId);
+          updateParentObject(result, file, res);
+        }
+        if (err) {
+          console.log("err: " + err);
+        }
+      });
       if (err) {
         console.log("err: " + err);
-        return res.json({ 'success': false, 'message': 'File upload failed, could not add parent relation' });
       }
-      console.log("File Ref added for building: " + updatedBuilding._id);
-
-
-      GFS.findOne({ '_id': file.id }, function (err, newfile) {
-        if (err) {
-          console.log(err);
-        }
-        // Return success response 
-        return res.json({ 'success': true, 'message': 'Tiedosto lisätty onnistuneesti', newfile, updatedBuilding });
-      });
     });
-
+    if (err) {
+      console.log("err: " + err);
+    }
     //       // TODO: add proper error handling here and for the whole class
     //     }).catch(function (err) { console.log(err); });
     //   });
   });
 }
 
+export const updateParentObject = (obj, file, res) => {
+  console.log("what are we: " + obj);
+
+  obj.files.push(file.id);
+
+  console.log('Pushing file id: ' + file.id + ' for parent: ' + obj._id);
+
+  obj.save((err, updatedObj) => {
+    if (err) {
+      console.log("err: " + err);
+      return res.json({ 'success': false, 'message': 'File upload failed, could not add parent relation' });
+    }
+    console.log("File Ref added for object: " + updatedObj._id);
+
+
+    GFS.findOne({ '_id': file.id }, function (err, newfile) {
+      if (err) {
+        console.log(err);
+      }
+      // Return success response 
+      return res.json({ 'success': true, 'message': 'Tiedosto lisätty onnistuneesti', newfile, updatedObj });
+    });
+  });
+}
 
 export const updateFile = (req, res) => {
-  console.log("PUT /updateFile: going to update file..."+req.body.id);
+  console.log("PUT /updateFile: going to update file..." + req.body.id);
 
   GFS.findOne({ '_id': req.body.id }, function (err, dbfile) {
     dbfile.set('fileDesc', req.body.fileDesc);
@@ -95,12 +119,12 @@ export const updateFile = (req, res) => {
         return res.json({ 'success': false, 'message': 'File upload failed, could not modify file metadata' });
       }
       console.log("Metadata added for uploaded file: " + fileToEdit);
-      return res.json({ 'success': true, 'message': 'Tiedosto päivitettiin', fileToEdit});
+      return res.json({ 'success': true, 'message': 'Tiedosto päivitettiin', fileToEdit });
 
     });
 
   });
- 
+
 
 
 }
@@ -113,21 +137,21 @@ export const deleteFile = (req, res) => {
 
   var objid = req.params.id;
 
-  console.log("obj ref:"+req.params.parentRefId);
+  console.log("obj ref:" + req.params.parentRefId);
   gridfs.remove({ _id: req.params.id }, function (err) {
     if (err) {
       console.log("Error on deleting file: " + err);
       res.json('Tiedostoa ei voi poistaa...');
     };
     Building.findOneAndUpdate(
-      { _id : req.params.parentRefId },
+      { _id: req.params.parentRefId },
       { $pull: { files: req.params.id } },
       { new: true },
       function (err, removedFromUser) {
         if (err) { console.error(err) }
 
-        console.log("Returning "+objid+ " and: "+pid);
-        return res.json({ 'success': true, 'message': 'Tiedosto poistettu onnistuneesti.', objid, pid});
+        console.log("Returning " + objid + " and: " + pid);
+        return res.json({ 'success': true, 'message': 'Tiedosto poistettu onnistuneesti.', objid, pid });
       });
   });
 
@@ -135,16 +159,16 @@ export const deleteFile = (req, res) => {
   console.log('success');
 }
 
-  // Building.findByIdAndRemove(req.params.id).populate('files'), function(err, fileref){
-  //   console.log("fileref found: "+fileref);
-  //   if (fileref) {
-  //       GFS.update({_id: fileref._id}, {
-  //               $pull : {files: req.params.id}
-  //           }, function(err, data) {
-  //             console.log("whaat: "+err+ " d: "+data);
-  //           });
-  //   }
-  // });
+// Building.findByIdAndRemove(req.params.id).populate('files'), function(err, fileref){
+//   console.log("fileref found: "+fileref);
+//   if (fileref) {
+//       GFS.update({_id: fileref._id}, {
+//               $pull : {files: req.params.id}
+//           }, function(err, data) {
+//             console.log("whaat: "+err+ " d: "+data);
+//           });
+//   }
+// });
 
 export const downloadFile = (req, res) => {
   console.log("File download requested for: " + req.params.id);

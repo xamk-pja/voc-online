@@ -8,6 +8,7 @@ import { Alert, Glyphicon, Button, Modal } from 'react-bootstrap';
 import CalcPointAddForm from "./CalcPointAddForm";
 import CalcPointEditForm from './CalcPointEditForm';
 import { Link } from 'react-router';
+import {downloadFile} from './fileUtils.js';
 
 export default class Building extends React.Component {
   constructor(props) {
@@ -23,8 +24,7 @@ export default class Building extends React.Component {
 
     this.showCalcPointDeleteModal = this.showCalcPointDeleteModal.bind(this);
     this.hideCalcPointDeleteModal = this.hideCalcPointDeleteModal.bind(this);
-    this.cofirmDeleteCalcPoint = this.cofirmDeleteCalcPoint.bind(this);
-    
+    this.cofirmDeleteCalcPoint = this.cofirmDeleteCalcPoint.bind(this);    
   }
 
   componentDidMount() {
@@ -104,35 +104,40 @@ export default class Building extends React.Component {
 
     return (
       <div className="buildingDetail">
-        <h2>Rakennuksen tiedot</h2>
         {!buildingState.building && buildingState.isFetching &&
           <div>
             <p>Ladataan....</p>
           </div>
         }
         {buildingState.building && !buildingState.isFetching &&
-          <div>
-            <h3>{buildingState.building.todoText}</h3>
-            <p><b>Rakennuksen lisätieto: </b>{buildingState.building.todoDesc}</p>
-            <p><b>Rakennuksen tyyppi: </b>{buildingState.building.buildingType}</p>
+          <div class="container">
+          <h3>Rakennuksen tiedot</h3>
+            <div class="row">
+              <div class="col-xs-6">
+            <h4>{buildingState.building.todoText}</h4>
+            <p><b>Tyyppi: </b>{buildingState.building.buildingType}</p>
+            <p><b>Lisätiedot: </b>{buildingState.building.todoDesc}</p>
             <p><b>Rakennuksen ID: </b>{buildingState.building._id}</p>
-
-            <p> <b>Rakennuksen tiedostot:</b><br /><br />
-                <Button onClick={() => this.showFileUploadModal(building._id)} bsStyle="success" bsSize="xsmall"><Glyphicon glyph="plus" /> Lisää tiedosto</Button>
-                  <br />
+            </div>
+            <div class="col-xs-6">
+            <b><u>Rakennuksen tiedostot:</u></b>
+                {/* <Button onClick={() => this.showFileUploadModal(building._id)} bsStyle="success" bsSize="xsmall"><Glyphicon glyph="plus" /> Lisää tiedosto</Button> */}
+                  <table className="table booksTable">
+                  <thead>
+                    <tr><th>Tiedoston kuvaus</th><th>Lataa</th></tr>
+                  </thead>
+                  <tbody>
                   {building.files.map((file, i) =>
-                    <span>
-                      <a href="#" onClick={() => this.downloadFile(file._id)}>{file.originalname}</a><span>&nbsp;
-                      <Button onClick={() => this.showFileEditModal(file)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="plus" /></Button>
-                      <Button onClick={() => this.showFileDeleteModal(file)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button>
-                      <br />
-                      &nbsp;{file.fileDesc}
-                         </span>
-                      <br />
-                    </span>
+                    <tr>
+                    <td>{file.fileDesc}</td>
+                    <td><a href onClick={(e) => {e.preventDefault(); downloadFile(file._id)}} style={{cursor:'pointer'}}>{file.originalname}</a></td>
+                    </tr>
                   )}
-            </p>
+                  </tbody>
+                  </table>
             <hr />
+            </div>
+          </div>
             <h4><b>Rakennuksen mittauspaikat:</b></h4>
             <p>Lisää uusi mittauspaikka: <Button type="button" className="btn btn-primary" bsStyle="success" onClick={this.showAddCalcPointModal} bsSize="xsmall"><Glyphicon glyph="plus" /></Button></p>
 
@@ -146,7 +151,7 @@ export default class Building extends React.Component {
                     <td>{calcPoint.shortDesc}</td>
                     <td>{calcPoint.longDesc}</td>
                     <td className="textCenter"><Link to={`/results/${calcPoint._id}`}>Avaa</Link> </td>
-                    <td className="textCenter"><Button onClick={() => this.showCalcPointEditModal(calcPoint)} bsStyle="primary" bsSize="xsmall"><Glyphicon glyph="edit" /></Button></td>
+                    <td className="textCenter"><Button onClick={() => this.showCalcPointEditModal(calcPoint)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="edit" /></Button></td>
                     <td className="textCenter"><Button onClick={() => this.showCalcPointDeleteModal(calcPoint)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button></td>
                   </tr>)
                   }

@@ -78,7 +78,7 @@ export default class Buildings extends React.Component {
       data.append('file', file);
       data.append('filename', file.name);
       data.append('parentId', fileForm.parentId.value);
-      this.props.mappedFile(data);
+      this.props.mappedFileUpload(data);
     }
     else {
       return;
@@ -103,7 +103,6 @@ export default class Buildings extends React.Component {
   }
 
   downloadFile = (fileId) => {
-    document.preventDefault;
     const url = `http://localhost:3001/api/files/${fileId}`;
     window.open(url, '_blank');
   }
@@ -157,21 +156,21 @@ export default class Buildings extends React.Component {
         {buildings && buildings.length > 0 && !buildingState.isFetching &&
           <table className="table booksTable">
             <thead>
-              <tr><th>Rakennuksen tyyppi</th><th>Kunta</th><th className="textCenter">Näytä</th><th className="textCenter">Muokkaa</th><th className="textCenter">Poista kohde</th><th className="textCenter">Tiedostot</th></tr>
+              <tr><th>Rakennuksen tyyppi</th><th>Kohde</th><th className="textCenter">Näytä</th><th className="textCenter">Muokkaa</th><th className="textCenter">Poista kohde</th><th className="textCenter">Tiedostot</th></tr>
             </thead>
             <tbody>
               {buildings.map((building, i) => <tr key={i}>
                 <td>{building.buildingType}</td>
-                <td>{building.kuntaText}</td>
+                <td>{building.todoText}</td>
                 <td className="textCenter"><Link to={`/${building._id}`}>Lisätiedot</Link> </td>
-                <td className="textCenter"><Button onClick={() => this.showEditModal(building)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="pencil" /></Button></td>
+                <td className="textCenter"><Button onClick={() => this.showEditModal(building)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="edit" /></Button></td>
                 <td className="textCenter"><Button onClick={() => this.showDeleteModal(building)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button></td>
                 <td className="textCenter"><Button onClick={() => this.showFileUploadModal(building._id)} bsStyle="success" bsSize="xsmall"><Glyphicon glyph="plus" /> Lisää tiedosto</Button>
                   <br />
                   {building.files.map((file, i) =>
                     <span>
-                      <a href="#" onClick={() => this.downloadFile(file._id)}>{file.originalname}</a><span>&nbsp;
-                      <Button onClick={() => this.showFileEditModal(file)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="plus" /></Button>
+                      <a href onClick={(e) => {e.preventDefault(); this.downloadFile(file._id)}} style={{cursor:'pointer'}}>{file.originalname}</a><span>&nbsp;
+                      <Button onClick={() => this.showFileEditModal(file)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="edit" /></Button>
                       <Button onClick={() => this.showFileDeleteModal(file)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button>
                       </span>
                       <br />

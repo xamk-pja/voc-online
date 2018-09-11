@@ -86,7 +86,7 @@ export const deleteCalcPoint = (req, res) => {
 export const updateBuilding = (req, res) => {
 
   console.log(req.body);
-  Building.findOneAndUpdate({ _id: req.body.id }, req.body, { new: true }, (err, building) => {
+  Building.findOneAndUpdate({ _id: req.body.id }, req.body, { new: true }).populate('files').exec((err, building) => {
     if (err) {
       return res.json({ 'success': false, 'message': 'Virhe', 'error': err });
     }
