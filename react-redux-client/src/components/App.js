@@ -20,15 +20,21 @@ export default class App extends React.Component {
   addBuilding(e){
       e.preventDefault();
       const form = document.getElementById('addBuildingForm');
-      if(form.todoText.value !== ""  && form.todoDesc.value !== ""){
+      if(form.buildingName.value !== ""  && form.buildingDesc.value !== ""){
         const data = new FormData();
-        data.append('todoText', form.todoText.value);
-        data.append('todoDesc', form.todoDesc.value);
+        data.append('buildingName', form.buildingName.value);
+        data.append('buildingAddress', form.buildingAddress.value);
+        data.append('buildingCounty', form.buildingCounty.value);
+        data.append('buildingOwner', form.buildingOwner.value);
+        data.append('buildingYear', form.buildingYear.value);
         data.append('buildingType', form.buildingType.value);
-        // const data = {
-        //   todoText: form.todoText.value,
-        //   todoDesc: form.todoDesc.value
-        // }
+        data.append('buildingMaterial', form.buildingMaterial.value);
+        data.append('buildingFloorBase', form.buildingFloorBase.value);
+        data.append('buildingRoof', form.buildingRoof.value);
+        data.append('buildingWarmingSystem', form.buildingWarmingSystem.value);
+        data.append('buildingFloorsNumber', form.buildingFloorsNumber.value);
+        data.append('buildingDesc', form.buildingDesc.value);
+
         this.props.mappedAddBuilding(data);
       form.reset();
       }

@@ -64,7 +64,7 @@ export const addMeasurementResult = (req, res) => {
 
 export const editResult = (req, res) => {
   console.log(req.body);
-  Result.findByIdAndUpdate(req.body.id, req.body, { new: true }, function (err, result) {
+  Result.findByIdAndUpdate(req.body.id, req.body, { new: true }).populate('files').exec((err, result) => {
     if (err) {
       return res.json({ 'success': false, 'message': 'Virhe', 'error': err });
     }

@@ -2,8 +2,19 @@ import mongoose from 'mongoose';
 mongoose.set('debug', true);
 
 var CalcPointSchema = mongoose.Schema({
-// CalcPointSchema.add({
+  // tilan nimi/numero
   shortDesc: String,
+  // kerros
+  cpFloorNumber: Number, 
+  // Lattiamateriaali
+  cpFloorMaterial: String,
+  // katto
+  cpRoofMaterial: String,
+  // Seinämateriaali
+  cpCeilingMaterial: String,
+  // ilmanvaihto
+  cpVentilation: String,
+  // lisätietoja
   longDesc: String,
   // coordinates: String,
   createdAt: {
@@ -20,12 +31,31 @@ var BuildingSchema = mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  todoText: String,
 
-  kuntaText: String,
+  //nimi
+  buildingName: String,
+  // lähiosoite
+  buildingAddress: String,
+  // kunta
+  buildingCounty: String,
+  // omistaja/hallinnoija
+  buildingOwner: String,
+  // Rakennusvuosi
+  buildingYear: Number,
+  // Käyttötarkoitus
   buildingType: String,
-  todoDesc: String,
-
+  // Runkorakenne
+  buildingMaterial: String,
+  // Alapohjarakenne
+  buildingFloorBase: String,
+  // Katto
+  buildingRoof: String,
+  // Lämmitysmuoto
+  buildingWarmingSystem: String,
+  // Kerrosluku
+  buildingFloorsNumber: Number,
+  // Lisätietoja
+  buildingDesc: String,
 
   createdAt: {
     type: Date,
@@ -40,9 +70,17 @@ var MeasurementResultsSchema = mongoose.Schema({
     type: Date,
     default: Date.now
   },
-
-  usedMetrics: String,
+  // mittauspvm
   resultdate: Date,
+  //sää
+  weather: String,
+  //tulokset
+  measurementMetrics: String,
+  // mitatut parametrit
+  usedMetrics: String,
+
+  resultDetails: String,
+  
   parentId: String,
 
   files: [{ type: mongoose.Schema.Types.ObjectId, ref: 'GFS'  }]

@@ -118,7 +118,7 @@ export const deleteBuilding = (req, res) => {
       return res.json({ 'success': false, 'message': 'Virhe' });
     }
 
-    return res.json({ 'success': true, 'message': building.todoText + ' deleted successfully' });
+    return res.json({ 'success': true, 'message': building.buildingName + ' deleted successfully' });
   })
 }
 

@@ -36,7 +36,7 @@
 //         }
 //         {calcPointToAdd && buildingState.successMsg &&
 //         <Alert bsStyle="success">
-//             Kohde <strong> {calcPointToAdd.todoText} </strong>{buildingState.successMsg}
+//             Kohde <strong> {calcPointToAdd.buildingName} </strong>{buildingState.successMsg}
 //         </Alert>
 //         } */}
 //                 </div>

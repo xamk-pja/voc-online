@@ -9,6 +9,7 @@ import CalcPointAddForm from "./CalcPointAddForm";
 import CalcPointEditForm from './CalcPointEditForm';
 import { Link } from 'react-router';
 import {downloadFile} from './fileUtils.js';
+import { getLabelFor } from './utils.js';
 
 export default class Building extends React.Component {
   constructor(props) {
@@ -46,9 +47,13 @@ export default class Building extends React.Component {
 
       const data = new FormData();
       data.append('shortDesc', editForm.shortDesc.value);
-      data.append('longDesc', editForm.longDesc.value);
+      data.append('cpFloorNumber', editForm.cpFloorNumber.value);
+      data.append('cpFloorMaterial', editForm.cpFloorMaterial.value);
+      data.append('cpRoofMaterial', editForm.cpRoofMaterial.value);
+      data.append('cpCeilingMaterial', editForm.cpCeilingMaterial.value);
+      data.append('cpVentilation', editForm.cpVentilation.value);
+      data.append('longDesc', editForm.longDesc.value);      
       data.append('parent', this.props.params.id);
-
       this.props.mappedAddCalcPoint(data);
     }
     else {
@@ -72,6 +77,11 @@ export default class Building extends React.Component {
       const data = new FormData();
       data.append('id', cpEditForm.id.value);
       data.append('shortDesc', cpEditForm.shortDesc.value);
+      data.append('cpFloorNumber', cpEditForm.cpFloorNumber.value);
+      data.append('cpFloorMaterial', cpEditForm.cpFloorMaterial.value);
+      data.append('cpRoofMaterial', cpEditForm.cpRoofMaterial.value);
+      data.append('cpCeilingMaterial', cpEditForm.cpCeilingMaterial.value);
+      data.append('cpVentilation', cpEditForm.cpVentilation.value);
       data.append('longDesc', cpEditForm.longDesc.value);
       this.props.mappedEditCalcPoint(data);
     }
@@ -114,9 +124,17 @@ export default class Building extends React.Component {
           <h3>Rakennuksen tiedot</h3>
             <div class="row">
               <div class="col-xs-6">
-            <h4>{buildingState.building.todoText}</h4>
-            <p><b>Tyyppi: </b>{buildingState.building.buildingType}</p>
-            <p><b>Lisätiedot: </b>{buildingState.building.todoDesc}</p>
+            <h4>{buildingState.building.buildingName}</h4>
+            <p><b>Osoite: </b>{buildingState.building.buildingAddress}, {buildingState.building.buildingCounty}</p>
+            <p><b>Omistaja/hallinnoija: </b>{buildingState.building.buildingOwner}</p>
+            <p><b>Rakennusvuosi: </b>{buildingState.building.buildingYear}</p>
+            <p><b>Käyttötarkoitus: </b>{getLabelFor('buildingType', buildingState.building.buildingType)}</p>
+            <p><b>Runkorakenne: </b>{getLabelFor('buildingMaterial', buildingState.building.buildingMaterial)}</p>
+            <p><b>Alapohjarakenne: </b>{getLabelFor('buildingFloorBase', buildingState.building.buildingFloorBase)}</p>
+            <p><b>Katto: </b>{getLabelFor('buildingRoof', buildingState.building.buildingRoof)}</p>
+            <p><b>Lämmitysmuoto: </b>{getLabelFor('buildingWarmingSystem', buildingState.building.buildingWarmingSystem)}</p>
+            <p><b>Kerrosluku: </b>{buildingState.building.buildingFloorsNumber}</p>
+            <p><b>Lisätiedot: </b>{buildingState.building.buildingDesc}</p>
             <p><b>Rakennuksen ID: </b>{buildingState.building._id}</p>
             </div>
             <div class="col-xs-6">
@@ -138,17 +156,23 @@ export default class Building extends React.Component {
             <hr />
             </div>
           </div>
+          <hr />
             <h4><b>Rakennuksen mittauspaikat:</b></h4>
             <p>Lisää uusi mittauspaikka: <Button type="button" className="btn btn-primary" bsStyle="success" onClick={this.showAddCalcPointModal} bsSize="xsmall"><Glyphicon glyph="plus" /></Button></p>
 
             {buildingState.building.calcPoints &&
               <table className="table booksTable">
                 <thead>
-                  <tr><th>Mittauspaikan nimi</th><th>Lisätieto</th><th className="textCenter">Mittaustulokset</th><th className="textCenter">Muokkaa mittauspaikkaa</th><th className="textCenter">Poista mittauspaikka</th></tr>
+                  <tr><th>Tilan nimi / numero</th><th>Kerros</th><th>Lattiamateriaali</th><th>Kattomateriaali</th><th>Seinämateriaali</th><th>Ilmanvaihto</th><th>Lisätiedot</th><th className="textCenter">Mittaustulokset</th><th className="textCenter">Muokkaa mittauspaikkaa</th><th className="textCenter">Poista mittauspaikka</th></tr>
                 </thead>
                 <tbody>
                   {calcPoints.map((calcPoint, i) => <tr key={i}>
                     <td>{calcPoint.shortDesc}</td>
+                    <td>{calcPoint.cpFloorNumber}</td>
+                    <td>{getLabelFor('cpFloorMaterial', calcPoint.cpFloorMaterial)}</td>
+                    <td>{getLabelFor('cpRoofMaterial', calcPoint.cpRoofMaterial)}</td>
+                    <td>{getLabelFor('cpCeilingMaterial', calcPoint.cpCeilingMaterial)}</td>
+                    <td>{getLabelFor('cpVentilation', calcPoint.cpVentilation)}</td>
                     <td>{calcPoint.longDesc}</td>
                     <td className="textCenter"><Link to={`/results/${calcPoint._id}`}>Avaa</Link> </td>
                     <td className="textCenter"><Button onClick={() => this.showCalcPointEditModal(calcPoint)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="edit" /></Button></td>
@@ -203,7 +227,7 @@ export default class Building extends React.Component {
                   }
                   {calcPointToAdd && buildingState.successMsg &&
                     <Alert bsStyle="success">
-                      Kohde <strong> {calcPointToAdd.todoText} </strong>{buildingState.successMsg}
+                      Kohde <strong> {calcPointToAdd.buildingName} </strong>{buildingState.successMsg}
                     </Alert>
                   }
                 </div>

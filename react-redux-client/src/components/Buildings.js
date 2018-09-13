@@ -35,13 +35,22 @@ export default class Buildings extends React.Component {
   submitEditBuilding(e) {
     e.preventDefault();
     const editForm = document.getElementById('EditBuildingForm');
-    if (editForm.todoText.value !== "") {
+    if (editForm.buildingName.value !== "") {
 
       const data = new FormData();
       data.append('id', editForm.id.value);
-      data.append('todoText', editForm.todoText.value);
+      data.append('buildingName', editForm.buildingName.value);
+      data.append('buildingAddress', editForm.buildingAddress.value);
+      data.append('buildingCounty', editForm.buildingCounty.value);
+      data.append('buildingOwner', editForm.buildingOwner.value);
+      data.append('buildingYear', editForm.buildingYear.value);
       data.append('buildingType', editForm.buildingType.value);
-      data.append('todoDesc', editForm.todoDesc.value);
+      data.append('buildingMaterial', editForm.buildingMaterial.value);
+      data.append('buildingFloorBase', editForm.buildingFloorBase.value);
+      data.append('buildingRoof', editForm.buildingRoof.value);
+      data.append('buildingWarmingSystem', editForm.buildingWarmingSystem.value);
+      data.append('buildingFloorsNumber', editForm.buildingFloorsNumber.value);
+      data.append('buildingDesc', editForm.buildingDesc.value);
       this.props.mappedEditBuilding(data);
     }
     else {
@@ -144,6 +153,7 @@ export default class Buildings extends React.Component {
     const buildingState = this.props.mappedBuildingState;
     const buildings = buildingState.buildings;
     const editBuilding = buildingState.buildingToEdit;
+    const addrQueryBase = "http://maps.google.com/?q=";
     return (
       <div className="col-md-12">
         <h3 className="centerAlign">Kaikki kohteet</h3>
@@ -156,13 +166,15 @@ export default class Buildings extends React.Component {
         {buildings && buildings.length > 0 && !buildingState.isFetching &&
           <table className="table booksTable">
             <thead>
-              <tr><th>Rakennuksen tyyppi</th><th>Kohde</th><th className="textCenter">Näytä</th><th className="textCenter">Muokkaa</th><th className="textCenter">Poista kohde</th><th className="textCenter">Tiedostot</th></tr>
+              <tr><th>Nimi</th><th>Rakennuksen käyttötarkoitus</th><th>Omistaja/hallinnoija</th><th>Osoite</th><th className="textCenter">Näytä</th><th className="textCenter">Muokkaa</th><th className="textCenter">Poista kohde</th><th className="textCenter">Tiedostot</th></tr>
             </thead>
             <tbody>
               {buildings.map((building, i) => <tr key={i}>
+                <td>{building.buildingName}</td>
                 <td>{building.buildingType}</td>
-                <td>{building.todoText}</td>
-                <td className="textCenter"><Link to={`/${building._id}`}>Lisätiedot</Link> </td>
+                <td>{building.buildingOwner}</td>
+                <td><a target="_blank" href={addrQueryBase + building.buildingAddress + ", " + building.buildingCounty}>{building.buildingAddress}, {building.buildingCounty}</a></td>
+                <td className="textCenter"><Link to={`/${building._id}`}>Avaa rakennuksen tiedot</Link> </td>
                 <td className="textCenter"><Button onClick={() => this.showEditModal(building)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="edit" /></Button></td>
                 <td className="textCenter"><Button onClick={() => this.showDeleteModal(building)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button></td>
                 <td className="textCenter"><Button onClick={() => this.showFileUploadModal(building._id)} bsStyle="success" bsSize="xsmall"><Glyphicon glyph="plus" /> Lisää tiedosto</Button>
@@ -210,7 +222,7 @@ export default class Buildings extends React.Component {
               }
               {editBuilding && !buildingState.isFetching && buildingState.successMsg &&
                 <Alert bsStyle="success">
-                  Kohde <strong> {editBuilding.todoText} </strong>{buildingState.successMsg}
+                  Kohde <strong> {editBuilding.buildingName} </strong>{buildingState.successMsg}
                 </Alert>
               }
             </div>
@@ -233,7 +245,7 @@ export default class Buildings extends React.Component {
           <Modal.Body>
             {buildingState.buildingToDelete && !buildingState.error && !buildingState.isFetching &&
               <Alert bsStyle="warning">
-                Oletko varma, että haluat poistaa kohteen <strong>{buildingState.buildingToDelete.todoText} </strong> ?
+                Oletko varma, että haluat poistaa kohteen <strong>{buildingState.buildingToDelete.buildingName} </strong> ?
               </Alert>
             }
             {buildingState.buildingToDelete && buildingState.error &&

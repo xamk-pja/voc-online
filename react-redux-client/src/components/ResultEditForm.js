@@ -8,6 +8,33 @@ const ResultEditForm = (props) => {
     <form className="form form-horizontal" id="ResultEditForm" onSubmit={props.editResult}>
       <div className="row">
         <h3 className="centerAlign">Muokkaa mittaustulosta</h3>
+        
+        <div className="col-md-12">
+          <FormGroup>
+            <ControlLabel>Mittauksen ajankohta: </ControlLabel>
+            <DatePicker id="resultdate" name="resultdate" value={props.resultToEdit.resultdate} />
+          </FormGroup>
+        </div>
+
+        <div className="col-md-12">
+          <FormGroup>
+            <ControlLabel>Säätila: </ControlLabel>
+            <FormControl
+              type="text" placeholder="Säätila"
+              name="weather" defaultValue={props.resultToEdit.weather}
+            />
+          </FormGroup>
+        </div>
+        <div className="col-md-12">
+          <FormGroup>
+            <ControlLabel>Tulokset: </ControlLabel>
+            <FormControl componentClass="select" placeholder="Valitse" name="measurementMetrics" defaultValue={props.resultToEdit.measurementMetrics}>
+              {
+                getTypesFor('measurementMetrics')
+              };
+            </FormControl>
+          </FormGroup>
+        </div>
         <div className="col-md-12">
           <input type="hidden" value={props.resultToEdit._id} name="id" />
           <FormGroup>
@@ -18,12 +45,17 @@ const ResultEditForm = (props) => {
               };
             </FormControl>
           </FormGroup>
-
+        </div>
+        <div className="col-md-12">
           <FormGroup>
-            <ControlLabel>Mittauksen ajankohta: </ControlLabel>
-            <DatePicker id="resultdate" name="resultdate" value={props.resultToEdit.resultdate} />
+            <ControlLabel>Lisätiedot: </ControlLabel>
+            <FormControl
+              type="text" placeholder="Lisätiedot"
+              name="resultDetails" defaultValue={props.resultToEdit.resultDetails}
+            />
           </FormGroup>
         </div>
+        
       </div>
       <FormGroup>
         <Button type="submit" bsStyle="success" bsSize="large" block>Lähetä</Button>

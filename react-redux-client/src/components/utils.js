@@ -14,10 +14,9 @@ export const getLabelFor = (param, selected) => {
   return null;
 }
 
-// If you've time, add these mappings to schema and figure out how to render these using react from mongoose..
+// If time permits, add these mappings to schema and figure out how to render these using react from mongoose..
 export const getTypesFor = (paramType) => {
     let items = [];        
-    
 
     if ( paramType === 'buildingType') {
       items.push((<option key='Koulu' value='Koulu'>Koulu</option>));
@@ -28,8 +27,7 @@ export const getTypesFor = (paramType) => {
       items.push((<option key='Asuintalo' value='Asuintalo'>Asuintalo</option>));
       items.push((<option key='Muu' value='Muu'>Muu</option>));
     }
-
-    else if ( paramType === 'buildingRunkorakenne' ) {
+    else if ( paramType === 'buildingMaterial' ) {
       items.push((<option key='Betoni' value='Betoni'>Betoni</option>));
       items.push((<option key='Tiili' value='Tiili'>Tiili</option>));
       items.push((<option key='Massiivihirsi' value='Massiivihirsi'>Massiivihirsi</option>));
@@ -37,28 +35,21 @@ export const getTypesFor = (paramType) => {
       items.push((<option key='Puurunkopuuverhous' value='Puurunkopuuverhous'>Puurunko + puuverhous</option>));
       items.push((<option key='Kivi' value='Kivi'>Kivi</option>));
       items.push((<option key='Muu' value='Muu'>Muu</option>));
-    } 
-
-    else if (paramType === 'buildingAlapohja') {
+    }
+    else if (paramType === 'buildingFloorBase') {
       items.push((<option key='Rossipohja' value='Rossipohja'>Rossipohja</option>));
       items.push((<option key='Maavarainenlattia' value='Maavarainenlattia'>Maavarainen lattia</option>));
       items.push((<option key='Kellarikerros' value='Kellarikerros'>Kellarikerros</option>));
       items.push((<option key='Muu' value='Muu'>Muu</option>));
     }
-    else if (paramType === 'buildingKatto') {
+    else if (paramType === 'buildingRoof') {
       items.push((<option key='Tasakatto' value='Tasakatto'>Tasakatto</option>));
       items.push((<option key='Harjakatto' value='Harjakatto'>Harjakatto</option>));
       items.push((<option key='Pulpettikatto' value='Pulpettikatto'>Pulpettikatto</option>));
       items.push((<option key='Mansardi' value='Mansardi'>Mansardi</option>));
       items.push((<option key='Muu' value='Muu'>Muu</option>));
     }
-    else if (paramType === 'buildingIV') {
-      items.push((<option key='Painovoimainen' value='Painovoimainen'>Painovoimainen</option>));
-      items.push((<option key='Koneellinenpoisto' value='Koneellinenpoisto'>Koneellinen poisto</option>));
-      items.push((<option key='Koneellinentulojapoisto' value='Koneellinentulojapoisto'>Koneellinen tulo ja poisto</option>));
-      items.push((<option key='Jaahdytys' value='Jaahdytys'>Jäähdytys</option>));
-    }
-    else if (paramType === 'buildingLammitys') {
+    else if (paramType === 'buildingWarmingSystem') {
       items.push((<option key='Kaukolampo' value='Kaukolampo'>Kaukolampö</option>));
       items.push((<option key='Oljylammitys' value='Oljylammitys'>Öljylämmitys</option>));
       items.push((<option key='Sahkolammitys' value='Sahkolammitys'>Sähkölämmitys</option>));
@@ -66,7 +57,7 @@ export const getTypesFor = (paramType) => {
       items.push((<option key='Maalampo' value='Maalampo'>Maalämpö</option>));
       items.push((<option key='Muu' value='Muu'>Muu</option>));
     }
-    else if (paramType === 'buildingKerrosluku') {
+    else if (paramType === 'buildingFloorsNumber') {
       items.push((<option key='1' value='1'>1</option>));
       items.push((<option key='2' value='2'>2</option>));
       items.push((<option key='3' value='3'>3</option>));
@@ -78,7 +69,19 @@ export const getTypesFor = (paramType) => {
       items.push((<option key='9' value='9'>9</option>));
       items.push((<option key='10' value='10'>10</option>));
     }
-    else if (paramType === 'buildingLattia') {
+    else if (paramType === 'cpFloorNumber') {
+      items.push((<option key='1' value='1'>1</option>));
+      items.push((<option key='2' value='2'>2</option>));
+      items.push((<option key='3' value='3'>3</option>));
+      items.push((<option key='4' value='4'>4</option>));
+      items.push((<option key='5' value='5'>5</option>));
+      items.push((<option key='6' value='6'>6</option>));
+      items.push((<option key='7' value='7'>7</option>));
+      items.push((<option key='8' value='8'>8</option>));
+      items.push((<option key='9' value='9'>9</option>));
+      items.push((<option key='10' value='10'>10</option>));
+    }
+    else if (paramType === 'cpFloorMaterial') {
       items.push((<option key='Muovimatto' value='Muovimatto'>Muovimatto</option>));
       items.push((<option key='Linoleum' value='Linoleum'>Linoleum</option>));
       items.push((<option key='Betoni' value='Betoni'>Betoni</option>));
@@ -86,7 +89,7 @@ export const getTypesFor = (paramType) => {
       items.push((<option key='Laminaatti' value='Laminaatti'>Laminaatti</option>));
       items.push((<option key='Muu' value='Muu'>Muu</option>));
     }
-    else if (paramType === 'buildingKatto') {
+    else if (paramType === 'cpRoofMaterial') {
       items.push((<option key='Akustolevy' value='Akustolevy'>Akustolevy</option>));
       items.push((<option key='MDF' value='MDF'>MDF</option>));
       items.push((<option key='Betoni' value='Betoni'>Betoni</option>));
@@ -94,7 +97,7 @@ export const getTypesFor = (paramType) => {
       items.push((<option key='Puu' value='Puu'>Puu</option>));
       items.push((<option key='Muu' value='Muu'>Muu</option>));
     }
-    else if (paramType === 'buildingSeinät') {
+    else if (paramType === 'cpCeilingMaterial') {
       items.push((<option key='Betoni' value='Betoni'>Betoni</option>));
       items.push((<option key='Kipsilevy' value='Kipsilevy'>Kipsilevy</option>));
       items.push((<option key='Laatta' value='Laatta'>Laatta</option>));
@@ -103,6 +106,12 @@ export const getTypesFor = (paramType) => {
       items.push((<option key='Puu' value='Puu'>Puu</option>));
       items.push((<option key='Muu' value='Muu'>Muu</option>));
 
+    }
+    else if (paramType === 'cpVentilation') {
+      items.push((<option key='Painovoimainen' value='Painovoimainen'>Painovoimainen</option>));
+      items.push((<option key='Koneellinenpoisto' value='Koneellinenpoisto'>Koneellinen poisto</option>));
+      items.push((<option key='Koneellinentulojapoisto' value='Koneellinentulojapoisto'>Koneellinen tulo ja poisto</option>));
+      items.push((<option key='Jaahdytys' value='Jaahdytys'>Jäähdytys</option>));
     }
     else if (paramType === 'usedMetrics') {
       items.push((<option key='Andersen' value='Andersen'>Andersen</option>));
@@ -115,6 +124,14 @@ export const getTypesFor = (paramType) => {
       items.push((<option key='ISO16000-6' value='ISO16000-6'>Standardi ISO 16000-6 (VOC-analyysi)</option>));
 
     }
+    else if (paramType === 'measurementMetrics') {
+      items.push((<option key='Tvoc' value='Tvoc'>TVOC</option>));
+      items.push((<option key='Mikrobit' value='Mikrobit'>Mikrobit</option>));
+      items.push((<option key='Hiukkaset' value='Hiukkaset'>Hiukkaset</option>));
+      items.push((<option key='Lampotila' value='Lampotila'>Lämpötila</option>));
+      items.push((<option key='Kosteus' value='Kosteus'>Kosteus</option>));
+      items.push((<option key='CO2' value='CO2'>CO2</option>));
+    }
 
     // Dynamic loop for accessing props
     // for (let i = 0; i <= this.props.maxValue; i++) {             
@@ -122,6 +139,7 @@ export const getTypesFor = (paramType) => {
     //      //here I will be creating my options dynamically based on
     //      //what props are currently passed to the parent component
     // }
+
     return items;
   }  
   

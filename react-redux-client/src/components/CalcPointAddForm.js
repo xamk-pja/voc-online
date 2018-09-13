@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, ControlLabel, FormControl, FormGroup } from 'react-bootstrap';
+import { getTypesFor } from './utils.js';
 
 const CalcPointAddForm = (props) => {
   return (
@@ -8,18 +9,67 @@ const CalcPointAddForm = (props) => {
         <h3 className="centerAlign">Lisää mittauspaikka rakennukselle</h3>
         <div className="col-md-12">
           <FormGroup>
-            <ControlLabel>Mittauspaikka: </ControlLabel>
+            <ControlLabel>Tilan nimi / numero: </ControlLabel>
             <FormControl
-              type="text" placeholder="Nimi"
+              type="text" placeholder="Tilan nimi / numero"
               name="shortDesc"
             />
           </FormGroup>
         </div>
         <div className="col-md-12">
           <FormGroup>
-            <ControlLabel>Kuvaus: </ControlLabel>
+            <ControlLabel>Kerros: </ControlLabel>
             <FormControl
-              componentClass="textarea" placeholder="Syötä kuvaus"
+              type="number" placeholder="Kerros"
+              name="cpFloorNumber"
+            />
+          </FormGroup>
+        </div>
+        <div className="col-md-12">
+          <FormGroup>
+            <ControlLabel>Lattiamateriaali: </ControlLabel>
+            <FormControl componentClass="select" placeholder="Valitse" name="cpFloorMaterial">
+              {
+                getTypesFor('cpFloorMaterial')
+              };            
+            </FormControl>
+          </FormGroup>
+        </div>
+        <div className="col-md-12">
+          <FormGroup>
+            <ControlLabel>Kattomateriaali: </ControlLabel>
+            <FormControl componentClass="select" placeholder="Valitse" name="cpRoofMaterial">
+              {
+                getTypesFor('cpRoofMaterial')
+              };            
+            </FormControl>
+          </FormGroup>
+        </div>
+        <div className="col-md-12">
+          <FormGroup>
+            <ControlLabel>Seinämateriaali: </ControlLabel>
+            <FormControl componentClass="select" placeholder="Valitse" name="cpCeilingMaterial">
+              {
+                getTypesFor('cpCeilingMaterial')
+              };            
+            </FormControl>
+          </FormGroup>
+        </div>
+        <div className="col-md-12">
+          <FormGroup>
+            <ControlLabel>Ilmanvaihto: </ControlLabel>
+            <FormControl componentClass="select" placeholder="Valitse" name="cpVentilation">
+              {
+                getTypesFor('cpVentilation')
+              };            
+            </FormControl>
+          </FormGroup>
+        </div>
+        <div className="col-md-12">
+          <FormGroup>
+            <ControlLabel>Lisätiedot: </ControlLabel>
+            <FormControl
+              componentClass="textarea" placeholder="Lisätiedot"
               name="longDesc"
             />
           </FormGroup>

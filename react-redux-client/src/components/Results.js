@@ -168,6 +168,9 @@ export default class Results extends React.Component {
       data.append('id', editForm.id.value);
       data.append('usedMetrics', editForm.usedMetrics.value);
       data.append('resultdate', editForm.resultdate.value);
+      data.append('measurementMetrics', editForm.measurementMetrics.value);
+      data.append('weather', editForm.weather.value);
+      data.append('resultDetails', editForm.resultDetails.value);
       this.props.mappedEditResult(data);
     }
     else {
@@ -210,13 +213,15 @@ export default class Results extends React.Component {
             {results && results.length > 0 && !buildingState.isFetching &&
               <table className="table booksTable">
                 <thead>
-                  <tr><th>Käytetty mittalaite</th><th>Mittauksen ajankohta</th><th className="textCenter">Näytä</th><th className="textCenter">Muokkaa</th><th className="textCenter">Poista kohde</th><th className="textCenter">Tiedostot</th></tr>
+                  <tr><th>Mittauksen ajankohta</th><th>Sää</th><th>Tulokset</th><th>Käytetty mittalaite</th><th>Lisätiedot</th><th className="textCenter">Muokkaa</th><th className="textCenter">Poista kohde</th><th className="textCenter">Tiedostot</th></tr>
                 </thead>
                 <tbody>
                   {results.map((result, i) => <tr key={i}>
-                    <td>{getLabelFor('usedMetrics', result.usedMetrics)}</td>
                     <td className="textCenter">{result.resultdate && new Date(result.resultdate).toLocaleDateString('fi-FI')}</td>
-                    <td className="textCenter"><Link to={`/${result._id}`}>TODO</Link> </td>
+                    <td>{result.weather}</td>
+                    <td>{getLabelFor('measurementMetrics', result.measurementMetrics)}</td>
+                    <td>{getLabelFor('usedMetrics', result.usedMetrics)}</td>
+                    <td>{result.resultDetails}</td>
                     <td className="textCenter"><Button onClick={() => this.showEditResultModal(result)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="edit" /></Button></td>
                     <td className="textCenter"><Button onClick={() => this.showDeleteResultModal(result)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button></td>
                     <td className="textCenter"><Button onClick={() => this.showFileUploadModal(result._id)} bsStyle="success" bsSize="xsmall"><Glyphicon glyph="plus" /> Lisää tiedosto</Button>

@@ -1229,6 +1229,9 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
       // update cache for file added to be visible on main listing
       var fileid = action.fileToDelete;
       var parentId = action.fileParent;
+      var cp = currentState.calcPoints;
+      var results = currentState.results;
+
       // Filter removed file from building's files
       const fileRemoveUpdatedBuildings = currentState.buildings.map((building) => {
         if (building._id === parentId) {
@@ -1240,12 +1243,32 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         }
       })
 
+    // this is again stupid to get the collection of updated objects in 3 separate same kind of functions
+    const fileUpdatedCPsDelete = currentState.calcPoints.map((cp) => {
+      if (cp._id === parentId) {
+        const updatedFiles = cp.files.filter((f) => f._id !== fileid);
+        cp.files = updatedFiles;
+        return cp;
+      }
+      return cp
+    })
+
+    // this is again stupid to get the collection of updated objects in 3 separate same kind of functions
+    const fileUpdatedResultsDelete = currentState.results.map((r) => {
+      if (r._id === parentId) {
+        const updatedFiles = r.files.filter((f) => f._id !== fileid);
+        r.files = updatedFiles;
+        return r;
+      }
+      return r;
+    })
+
       return {
         ...currentState,
         buildings: fileRemoveUpdatedBuildings,
         building: currentState.building,
-        results: currentState.results,
-        calcPoints: currentState.calcPoints,
+        results: fileUpdatedResultsDelete,
+        calcPoints: fileUpdatedCPsDelete,
         isFetching: false,
         error: null,
         successMsg: action.successMsg,
