@@ -76,8 +76,6 @@ export const fetchBuildings = () => {
           })
         }
       })
-
-
   }
 }
 
@@ -479,33 +477,6 @@ export const addNewFileFailed = (error) => {
     error
   }
 }
-
-
-
-export const fileUpload = (file) => {
-
-  return (dispatch) => {
-    dispatch(addNewFileRequest(file));
-
-    fetch(apiUrl + "/files/", {
-      method: 'post',
-      body: file,
-
-    }).then(response => {
-      if (response.ok) {
-        response.json().then(data => {
-          dispatch(addNewFileRequestSuccess(data.newfile, data.updatedBuilding, data.message))
-        })
-      }
-      else {
-        response.json().then(error => {
-          dispatch(addNewFileFailed(error))
-        })
-      }
-    })
-  }
-}
-
 
 // File edits
 export const showFileEditModal = (fileToEdit) => {

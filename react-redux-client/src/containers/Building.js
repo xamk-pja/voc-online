@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import * as vocActions from '../actions/buildingActions';
+import * as fileActions from '../actions/fileActions';
 import Building from '../components/Building';
 
 // map state from store to props
@@ -25,7 +26,8 @@ const mapDispatchToProps = (dispatch) => {
     
     mappedDeleteCalcPoint: calcPointToDelete => dispatch(vocActions.deleteCalcPoint(calcPointToDelete)),
     mappedShowCalcPointDeleteModal: calcPointToDelete => dispatch(vocActions.showCalcPointDeleteModal(calcPointToDelete)),
-    mappedHideCalcPointDeleteModal: () => dispatch(vocActions.hideCalcPointDeleteModal())
+    mappedHideCalcPointDeleteModal: () => dispatch(vocActions.hideCalcPointDeleteModal()),
+    mappedFileDownload: (fileId, name) => dispatch(fileActions.fileDownload(fileId, name))
   }
 }
 

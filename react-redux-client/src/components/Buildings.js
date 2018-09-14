@@ -17,7 +17,6 @@ export default class Buildings extends React.Component {
     this.hideFileEditModal = this.hideFileEditModal.bind(this);
     this.hideFileDeleteModal = this.hideFileDeleteModal.bind(this);
     this.confirmDeleteFile = this.confirmDeleteFile.bind(this);
-    // this.downloadFile = this.downloadFile.bind(this);
   }
 
   componentWillMount() {
@@ -111,9 +110,8 @@ export default class Buildings extends React.Component {
     }
   }
 
-  downloadFile = (fileId) => {
-    const url = `http://localhost:3001/api/files/${fileId}`;
-    window.open(url, '_blank');
+  downloadFile = (fileId, name) => {
+    this.props.mappedFileDownload(fileId, name);
   }
 
   showFileUploadModal(parentId) {
@@ -181,7 +179,7 @@ export default class Buildings extends React.Component {
                   <br />
                   {building.files.map((file, i) =>
                     <span>
-                      <a href onClick={(e) => {e.preventDefault(); this.downloadFile(file._id)}} style={{cursor:'pointer'}}>{file.originalname}</a><span>&nbsp;
+                      <a href onClick={(e) => {e.preventDefault(); this.downloadFile(file._id, file.originalname)}} style={{cursor:'pointer'}}>{file.originalname}</a><span>&nbsp;
                       <Button onClick={() => this.showFileEditModal(file)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="edit" /></Button>
                       <Button onClick={() => this.showFileDeleteModal(file)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button>
                       </span>

@@ -34,7 +34,8 @@ const mapDispatchToProps = (dispatch) => {
     mappedHideFileDeleteModal: () => dispatch(fileActions.hideFileDeleteModal()),
     mappedDeleteFile: fileToDelete => dispatch(fileActions.deleteFile(fileToDelete)),
     mappedFileUpload: file => dispatch(fileActions.fileUpload(file)),
-    mappedFileEdit: file => dispatch(fileActions.fileEdit(file))
+    mappedFileEdit: file => dispatch(fileActions.fileEdit(file)),
+    mappedFileDownload: (fileId, name) => dispatch(fileActions.fileDownload(fileId, name))
   }
 }
 

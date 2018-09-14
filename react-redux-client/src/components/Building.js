@@ -8,7 +8,6 @@ import { Alert, Glyphicon, Button, Modal } from 'react-bootstrap';
 import CalcPointAddForm from "./CalcPointAddForm";
 import CalcPointEditForm from './CalcPointEditForm';
 import { Link } from 'react-router';
-import {downloadFile} from './fileUtils.js';
 import { getLabelFor } from './utils.js';
 
 export default class Building extends React.Component {
@@ -91,6 +90,10 @@ export default class Building extends React.Component {
 
   }
 
+  downloadFile = (fileId, name) => {
+    this.props.mappedFileDownload(fileId, name);
+  }
+
   hideCalcPointDeleteModal() {
     this.props.mappedHideCalcPointDeleteModal();
   }
@@ -148,7 +151,7 @@ export default class Building extends React.Component {
                   {building.files.map((file, i) =>
                     <tr>
                     <td>{file.fileDesc}</td>
-                    <td><a href onClick={(e) => {e.preventDefault(); downloadFile(file._id)}} style={{cursor:'pointer'}}>{file.originalname}</a></td>
+                    <td><a href onClick={(e) => {e.preventDefault(); this.downloadFile(file._id, file.originalname)}} style={{cursor:'pointer'}}>{file.originalname}</a></td>
                     </tr>
                   )}
                   </tbody>
