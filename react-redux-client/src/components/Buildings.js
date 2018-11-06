@@ -4,8 +4,6 @@ import { Link } from 'react-router';
 import BuildingEditForm from './BuildingEditForm';
 import FileUploadForm from './FileUploadForm';
 import FileEditForm from './FileEditForm';
-import Keycloak from 'keycloak-js';
-
 
 export default class Buildings extends React.Component {
   constructor(props) {
@@ -19,15 +17,9 @@ export default class Buildings extends React.Component {
     this.hideFileEditModal = this.hideFileEditModal.bind(this);
     this.hideFileDeleteModal = this.hideFileDeleteModal.bind(this);
     this.confirmDeleteFile = this.confirmDeleteFile.bind(this);
-
-    // this.authState = { keycloak: null, authenticated: false };
   }
 
   componentDidMount() {
-    // const keycloak = Keycloak('/keycloak.json');
-    // keycloak.init({ onLoad: 'login-required' }).then(authenticated => {
-    //   this.authState = { keycloak: keycloak, authenticated: authenticated}
-    // });
     this.props.fetchBuildings();
   }
 
@@ -161,9 +153,6 @@ export default class Buildings extends React.Component {
     const editBuilding = buildingState.buildingToEdit;
     const addrQueryBase = "http://maps.google.com/?q=";
 
-    // if (this.authState.keycloak) {
-
-    //   if (this.authState.authenticated) 
     return (
       <div className="col-md-12">
         <h3 className="centerAlign">Kaikki kohteet</h3>
@@ -419,9 +408,5 @@ export default class Buildings extends React.Component {
         </Modal>
       </div>
     );
-    
-  //   else  return (<div>Sisäänkirjautuminen ei onnistunut!</div>)
-  //  }
-  //  return (<div>Kirjaudutaan sisään...</div>);
   }
 }

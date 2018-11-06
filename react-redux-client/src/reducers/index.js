@@ -8,6 +8,4 @@ export default combineReducers({
   appState:appReducer,
   buildingState:buildingReducer,
   routing
-  // More reducers if there are
-  // can go here
 })

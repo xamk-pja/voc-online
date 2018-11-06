@@ -7,7 +7,8 @@ import Results from '../components/Results';
 const mapStateToProps = (state) => {
   return {
     //you can now say this.props.mappedAppSate
-    mappedBuildingState: state.buildingState
+    mappedBuildingState: state.buildingState,
+    mappedFileState: state.fileState
   }
 }
 

@@ -49,9 +49,10 @@ export const fileDownload = (file, name) => {
       let a = document.createElement("a");
       let blobURL = URL.createObjectURL(data);
       name = name.replace(/,/g , "");
-
       a.download = name;
+      
       a.href = blobURL
+      a.target = '_blank'
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
