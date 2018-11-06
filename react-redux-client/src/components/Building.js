@@ -25,6 +25,7 @@ export default class Building extends React.Component {
     this.showCalcPointDeleteModal = this.showCalcPointDeleteModal.bind(this);
     this.hideCalcPointDeleteModal = this.hideCalcPointDeleteModal.bind(this);
     this.cofirmDeleteCalcPoint = this.cofirmDeleteCalcPoint.bind(this);    
+    
   }
 
   componentDidMount() {

@@ -4,14 +4,13 @@
 
 const apiUrl = "/api/";
 
-export const toggleAddBook = () => {
+export const toggleAddBuilding = () => {
   return {
     type: 'TOGGLE_ADD_BUILDING'
   }
 }
 
 export const addNewBuilding = (building) => {
-  console.log(building)
   return (dispatch) => {
     dispatch(addNewBuildingRequest(building));
     return fetch(apiUrl, {

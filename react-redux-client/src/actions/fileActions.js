@@ -48,6 +48,8 @@ export const fileDownload = (file, name) => {
     .then(function(data) {
       let a = document.createElement("a");
       let blobURL = URL.createObjectURL(data);
+      name = name.replace(/,/g , "");
+
       a.download = name;
       a.href = blobURL
       document.body.appendChild(a)

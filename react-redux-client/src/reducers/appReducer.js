@@ -1,18 +1,24 @@
 // ./react-redux-client/src/reducers/appReducer.js
 const INITIAL_STATE = {
-  showAddBuilding: false
+  showAddBuilding: false,
+  kc: null
 }
 
 const appReducer = (currentState = INITIAL_STATE, action) => {
   switch (action.type) {
     case 'TOGGLE_ADD_BUILDING':
-          return {
-            ...currentState,showAddBuilding: !currentState.showAddBuilding
-          }
+      return {
+        ...currentState, showAddBuilding: !currentState.showAddBuilding
+      }
 
+    case 'LOGIN_DETAILS':
+      return {
+        ...currentState,
+        kc: action.kc
+      }
 
     default:
-       return currentState;
+      return currentState;
 
   }
 }

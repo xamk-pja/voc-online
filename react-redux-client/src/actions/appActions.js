@@ -5,3 +5,12 @@ export const toggleAddBuilding = () => {
     type: 'TOGGLE_ADD_BUILDING'
   }
 }
+
+export const loginSuccess = (kc) => {
+  return {
+    type: 'LOGIN_DETAILS',
+    kc: kc
+  }
+}
+
+
