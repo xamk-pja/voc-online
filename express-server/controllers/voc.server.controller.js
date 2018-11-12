@@ -2,6 +2,7 @@
 //import models
 import { CalcPoint, Building, GFS } from '../models/voc.server.building-model';
 
+import {dynamicSort} from '../utils/utils.js';
 export const getBuildings = (req, res) => {
   Building.find().populate('files').exec((err, buildings) => {
 
@@ -10,8 +11,8 @@ export const getBuildings = (req, res) => {
     if (err) {
       return res.json({ 'success': false, 'message': 'Virhe' });
     }
-
-    return res.json({ 'success': true, 'message': 'Kohteet haettu onnistuneesti', buildings });
+    buildings.sort(dynamicSort("buildingName", "asc"));
+    return res.json({ 'success': true, 'message': 'Kohteet haettu onnistuneesti', buildings});
   });
 }
 
@@ -121,4 +122,3 @@ export const deleteBuilding = (req, res) => {
     return res.json({ 'success': true, 'message': building.buildingName + ' deleted successfully' });
   })
 }
-

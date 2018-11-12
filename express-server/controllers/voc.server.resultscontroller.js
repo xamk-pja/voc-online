@@ -4,6 +4,7 @@
 
 //import models
 import { CalcPoint, Building, GFS, Result } from '../models/voc.server.building-model';
+import {dynamicSort} from '../utils/utils.js';
 
 export const getResultsForCalcPoint = (req, res) => {
 
@@ -25,6 +26,8 @@ export const getResultsForCalcPoint = (req, res) => {
     }
 
     const results = calcPoint.results;
+    results.sort(dynamicSort("resultdate", "desc"));
+
     return res.json({ 'success': true, 'message': 'Kohteet haettu onnistuneesti', results, calcPoint });
   });
 }

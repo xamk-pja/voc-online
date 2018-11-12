@@ -17,6 +17,7 @@ export default class Buildings extends React.Component {
     this.hideFileEditModal = this.hideFileEditModal.bind(this);
     this.hideFileDeleteModal = this.hideFileDeleteModal.bind(this);
     this.confirmDeleteFile = this.confirmDeleteFile.bind(this);
+    this.searchTable = this.searchTable.bind(this);
   }
 
   componentDidMount() {
@@ -57,7 +58,7 @@ export default class Buildings extends React.Component {
     }
 
   }
-  
+
   hideDeleteModal() {
     this.props.mappedhideDeleteModal();
   }
@@ -142,10 +143,58 @@ export default class Buildings extends React.Component {
     this.props.mappedDeleteFile(this.props.mappedBuildingState.fileToDelete);
   }
 
-   /**
-   * FILE RELATED FUNCTIONS ENDS
-   */
+  /**
+  * FILE RELATED FUNCTIONS ENDS
+  */
 
+  // resetComponent = () => this.setState({ isLoading: false, results: [], oldResults: this.prop.mappedBuildingState.buildings || [], value: '' })
+
+  // handleSearchChange = (e, { value }) => {
+  //   setTimeout(() => {
+  //     this.setState({ isLoading: true, value })
+
+  //     if (this.state.value.length < 1) return this.resetComponent()
+
+  //     const re = new RegExp(_.escapeRegExp(this.state.value), 'i')
+  //     const filteredResults = _.filter(this.props.users, result => re.test(result.name))
+  //     this.setState({
+  //       isLoading: false,
+  //       results: filteredResults,
+  //       oldResults: filteredResults
+  //     })
+  //   }, 200)
+  // }
+  searchTable() {
+    // Declare variables 
+    var input, filter, table, tr, td, i;
+    input = this.refs.bfilter;
+    if (input) {
+      filter = input.value.toUpperCase();
+      table = this.refs.btable;
+      if (table) {
+        tr = table.getElementsByTagName("tr");
+        // Loop through all table rows, and hide those who don't match the search query
+
+        for (i = 0; i < tr.length; i++) {
+          var tds = tr[i].getElementsByTagName("td");
+          var show = false;
+          for (var ix = 0; ix < tds.length; ix++) {
+            if (tds[ix]) {
+              if (tds[ix].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                show = true;
+              }
+            }
+          }
+          if (show) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }
+
+      }
+    }
+  }
 
   render() {
     const buildingState = this.props.mappedBuildingState;
@@ -156,6 +205,9 @@ export default class Buildings extends React.Component {
     return (
       <div className="col-md-12">
         <h3 className="centerAlign">Kaikki kohteet</h3>
+        <div class="col-xs-3">
+          <input type="text" ref="bfilter" onKeyUp={this.searchTable} placeholder="Hae.." className="form-control" />
+        </div>
         {!buildings && buildingState.isFetching &&
           <p>Ladataan tietoa rakennuksista....</p>
         }
@@ -163,7 +215,7 @@ export default class Buildings extends React.Component {
           <p>Ei kohteita saatavilla.</p>
         }
         {buildings && buildings.length > 0 && !buildingState.isFetching &&
-          <table className="table booksTable">
+          <table ref="btable" className="table buildingsTable">
             <thead>
               <tr><th>Nimi</th><th>Rakennuksen käyttötarkoitus</th><th>Omistaja/hallinnoija</th><th>Osoite</th><th className="textCenter">Näytä</th><th className="textCenter">Muokkaa</th><th className="textCenter">Poista kohde</th><th className="textCenter">Tiedostot</th></tr>
             </thead>
@@ -180,9 +232,9 @@ export default class Buildings extends React.Component {
                   <br />
                   {building.files.map((file, i) =>
                     <span>
-                      <a href onClick={(e) => {e.preventDefault(); this.downloadFile(file._id, file.originalname)}} style={{cursor:'pointer'}}>{file.originalname}</a><span>&nbsp;
+                      <a href onClick={(e) => { e.preventDefault(); this.downloadFile(file._id, file.originalname) }} style={{ cursor: 'pointer' }}>{file.originalname}</a><span>&nbsp;
                       <Button onClick={() => this.showFileEditModal(file)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="edit" /></Button>
-                      <Button onClick={() => this.showFileDeleteModal(file)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button>
+                        <Button onClick={() => this.showFileDeleteModal(file)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button>
                       </span>
                       <br />
                     </span>
@@ -360,8 +412,8 @@ export default class Buildings extends React.Component {
           </Modal.Footer>
         </Modal>
 
-         {/* Modal for deleting file */}
-         <Modal
+        {/* Modal for deleting file */}
+        <Modal
           show={buildingState.showFileDeleteModal}
           onHide={this.hideFileDeleteModal}
           container={this}

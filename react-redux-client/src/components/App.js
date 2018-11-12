@@ -26,7 +26,6 @@ export default class App extends React.Component {
         this.props.mappedLoginSuccess({ keycloak: keycloak, authenticated: authenticated });
       });
     }
-
   }
 
   logout() {
@@ -77,12 +76,6 @@ export default class App extends React.Component {
               <Navbar.Toggle />
             </Navbar.Header>
             <Navbar.Collapse>
-              <Navbar.Form pullLeft>
-                <FormGroup>
-                  <FormControl type="text" placeholder="Hae" />
-                </FormGroup>{' '}
-                <Button type="submit">Hae</Button>
-              </Navbar.Form>
               <Nav pullRight>
                 <LinkContainer to={{ pathname: '/', query: {} }} onClick={this.toggleAddBuilding}>
                   <NavItem eventKey={1}>Lisää uusi rakennus</NavItem>
