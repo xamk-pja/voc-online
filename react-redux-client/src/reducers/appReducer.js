@@ -14,7 +14,7 @@ const appReducer = (currentState = INITIAL_STATE, action) => {
     case 'LOGIN_DETAILS':
       return {
         ...currentState,
-        kc: action.kc
+        kc: action.kc // keycloak instance to redux cache
       }
 
     default:

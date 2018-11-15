@@ -8,6 +8,9 @@ export default function configureStore(initialState) {
     thunk,
   ];
 
+  /**
+   * Create store and add support for dev tools
+   */
   const store = createStore(rootReducer, initialState, compose(
     applyMiddleware(...middlewares),
     window.devToolsExtension ? window.devToolsExtension() : f => f // add support for Redux dev tools

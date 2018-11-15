@@ -4,15 +4,14 @@ Page for singe building information selected from the main table
 */
 
 import React from 'react';
-import { Alert, Glyphicon, Button, Modal } from 'react-bootstrap';
-import { Link } from 'react-router';
-
+import { Alert, Button, Glyphicon, Modal } from 'react-bootstrap';
+import { browserHistory } from 'react-router';
+import FileEditForm from './FileEditForm';
+import FileUploadForm from './FileUploadForm';
 import ResultAddForm from './ResultAddForm';
 import ResultEditForm from './ResultEditForm';
 import { getLabelFor } from './utils.js';
-import { browserHistory } from 'react-router';
-import FileUploadForm from './FileUploadForm';
-import FileEditForm from './FileEditForm';
+
 
 export default class Results extends React.Component {
   constructor(props) {
@@ -224,9 +223,10 @@ export default class Results extends React.Component {
                     <td className="textCenter"><Button onClick={() => this.showDeleteResultModal(result)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button></td>
                     <td className="textCenter"><Button onClick={() => this.showFileUploadModal(result._id)} bsStyle="success" bsSize="xsmall"><Glyphicon glyph="plus" /> Lisää tiedosto</Button>
                       <br />
-                      {result.files.map((file, i) =>
-                        <span>
-                          <a href onClick={(e) => {e.preventDefault(); this.downloadFile(file._id, file.originalname)}} style={{cursor:'pointer'}}>{file.originalname}</a><span>&nbsp;
+                      {result.files.map((file, ix) =>
+                        <span key={ix}>
+                          <a href="true" onClick={(e) => {e.preventDefault(); this.downloadFile(file._id, file.originalname)}} style={{cursor:'pointer'}}>{file.originalname}</a>
+                          <span>&nbsp;
                             <Button onClick={() => this.showFileEditModal(file)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="edit" /></Button>
                             <Button onClick={() => this.showFileDeleteModal(file)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button>
                           </span>

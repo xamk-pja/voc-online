@@ -21,8 +21,11 @@ const uploadGrid = multer({ storage: storage });
 
 // Multer .single() needs to be changed if you want to allow multi-uploads for routes defined in router
 router.use(uploadGrid.single('file'));
+
+router.route('/fetch')
+      .post(vocController.getBuildings);
+
 router.route('/')
-     .get(vocController.getBuildings)
      .post(vocController.addBuilding)
      .put(vocController.updateBuilding);
 

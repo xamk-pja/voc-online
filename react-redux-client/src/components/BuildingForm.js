@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormGroup, ControlLabel, FormControl, Button } from 'react-bootstrap';
 
-import { getTypesFor } from './utils.js';
+import { getTypesFor, parseGroups } from './utils.js';
 
 const BuildingForm = (props) => {
   return (
@@ -59,10 +59,10 @@ const BuildingForm = (props) => {
             <FormControl componentClass="select" placeholder="Valitse" name="buildingType">
               {
                 getTypesFor('buildingType')
-              };            
+              };
             </FormControl>
             {/* {buildings.map((building,i) => <tr key={i}>} */}
- 
+
           </FormGroup>
         </div>
         <div className="col-md-12">
@@ -71,10 +71,10 @@ const BuildingForm = (props) => {
             <FormControl componentClass="select" placeholder="Valitse" name="buildingMaterial">
               {
                 getTypesFor('buildingMaterial')
-              };            
+              };
             </FormControl>
             {/* {buildings.map((building,i) => <tr key={i}>} */}
- 
+
           </FormGroup>
         </div>
         <div className="col-md-12">
@@ -83,8 +83,8 @@ const BuildingForm = (props) => {
             <FormControl componentClass="select" placeholder="Valitse" name="buildingRoof">
               {
                 getTypesFor('buildingRoof')
-              };            
-            </FormControl> 
+              };
+            </FormControl>
           </FormGroup>
         </div>
         <div className="col-md-12">
@@ -93,8 +93,8 @@ const BuildingForm = (props) => {
             <FormControl componentClass="select" placeholder="Valitse" name="buildingWarmingSystem">
               {
                 getTypesFor('buildingWarmingSystem')
-              };            
-            </FormControl> 
+              };
+            </FormControl>
           </FormGroup>
         </div>
         <div className="col-md-12">
@@ -103,8 +103,8 @@ const BuildingForm = (props) => {
             <FormControl componentClass="select" placeholder="Valitse" name="buildingFloorsNumber">
               {
                 getTypesFor('buildingFloorsNumber')
-              };            
-            </FormControl> 
+              };
+            </FormControl>
           </FormGroup>
         </div>
         <div className="col-md-12">
@@ -113,8 +113,8 @@ const BuildingForm = (props) => {
             <FormControl componentClass="select" placeholder="Valitse" name="buildingFloorBase">
               {
                 getTypesFor('buildingFloorBase')
-              };            
-            </FormControl> 
+              };
+            </FormControl>
           </FormGroup>
         </div>
         <div className="col-md-12">
@@ -126,7 +126,23 @@ const BuildingForm = (props) => {
             />
           </FormGroup>
         </div>
-      </div>
+        {props.groups && props.groups.length > 1 &&
+          <div className="col-md-12">
+            <FormGroup>
+              <ControlLabel>Rakennuksen omistaja (vaikuttaa kohteen näkyvyyteen sisäänkirjautuneille käyttäjille): </ControlLabel>
+              <FormControl componentClass="select" placeholder="Valitse" name="dataOwner">
+                {
+                  parseGroups(props.groups)
+                };
+              </FormControl>
+            </FormGroup>
+          </div>
+        }
+
+        {props.groups && props.groups.length === 1 &&
+          <input type="hidden" name="dataOwner" value={props.groups[0]} />
+        }
+        </div>
       <FormGroup>
         <Button type="submit" bsStyle="success" bsSize="large" block>Lähetä</Button>
       </FormGroup>

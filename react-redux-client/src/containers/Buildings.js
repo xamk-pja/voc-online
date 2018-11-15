@@ -7,7 +7,8 @@ import Buildings from '../components/Buildings';
 const mapStateToProps = (state,ownProps) => {
   return {
     //you can now say this.props.mappedBuildingState
-    mappedBuildingState: state.buildingState
+    mappedBuildingState: state.buildingState,
+    mappedAppState: state.appState
   }
 }
 
@@ -15,7 +16,7 @@ const mapStateToProps = (state,ownProps) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     //you can now say this.props.mappedAppActions
-    fetchBuildings: () => dispatch(vocActions.fetchBuildings()),
+    fetchBuildings: (user) => dispatch(vocActions.fetchBuildings(user)),
     mappedEditBuilding: buildingToEdit => dispatch(vocActions.editBuilding(buildingToEdit)),
     mappedshowEditModal: buildingToEdit => dispatch(vocActions.showEditModal(buildingToEdit)),
     mappedhideEditModal: () => dispatch(vocActions.hideEditModal()),

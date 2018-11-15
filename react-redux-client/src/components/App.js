@@ -1,10 +1,10 @@
 // ./react-redux-client/src/components/App.js
+import Keycloak from 'keycloak-js';
 import React from 'react';
-import { Navbar, Nav, NavItem, Button, FormGroup, FormControl } from 'react-bootstrap';
+import { Nav, Navbar, NavItem } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import './App.css';
 import BuildingForm from './BuildingForm';
-import Keycloak from 'keycloak-js';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -51,6 +51,7 @@ export default class App extends React.Component {
       data.append('buildingWarmingSystem', form.buildingWarmingSystem.value);
       data.append('buildingFloorsNumber', form.buildingFloorsNumber.value);
       data.append('buildingDesc', form.buildingDesc.value);
+      data.append('dataOwner', form.dataOwner.value);
 
       this.props.mappedAddBuilding(data);
       form.reset();
@@ -62,18 +63,16 @@ export default class App extends React.Component {
 
   render() {
     const appState = this.props.mappedAppState;
-
     return (
       <div>
         {appState.kc && appState.kc.authenticated &&
           <Navbar inverse collapseOnSelect className="customNav">
             <Navbar.Header>
-              <Navbar.Brand>
+                <Nav>
                 <LinkContainer to="/">
-                  <span>VOC online</span>
+                  <NavItem>VOC online</NavItem>
                 </LinkContainer>
-              </Navbar.Brand>
-              <Navbar.Toggle />
+                </Nav>
             </Navbar.Header>
             <Navbar.Collapse>
               <Nav pullRight>
@@ -82,7 +81,8 @@ export default class App extends React.Component {
                 </LinkContainer>
               </Nav>
               <Nav pullRight>
-                <NavItem onClick={this.logout} eventKey={2}>Kirjaudu ulos</NavItem>
+                <NavItem onClick={this.logout} eventKey={2}>Kirjaudu ulos ({appState.kc.keycloak.idTokenParsed.preferred_username})                
+                </NavItem>
               </Nav>
             </Navbar.Collapse>
           </Navbar>
@@ -90,7 +90,7 @@ export default class App extends React.Component {
         {appState.kc && appState.kc.authenticated &&
           <div className="container">
             {appState.showAddBuilding &&
-              <BuildingForm addBuilding={this.addBuilding} />
+              <BuildingForm addBuilding={this.addBuilding} groups={appState.kc.keycloak.tokenParsed.groups} />
             }
             { /* Each Smaller Components */}
             {this.props.children}

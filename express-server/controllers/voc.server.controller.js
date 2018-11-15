@@ -2,18 +2,35 @@
 //import models
 import { CalcPoint, Building, GFS } from '../models/voc.server.building-model';
 
-import {dynamicSort} from '../utils/utils.js';
+import { dynamicSort } from '../utils/utils.js';
 export const getBuildings = (req, res) => {
-  Building.find().populate('files').exec((err, buildings) => {
+  if (req.body.groups) {
+    var userGroups = JSON.parse(req.body.groups);
+    Building.find(getQuery(userGroups)).populate('files').exec((err, buildings) => {
+      console.log("buildings found: " + buildings);
 
-    console.log("buildings found: "+buildings);
+      if (err) {
+        return res.json({ 'success': false, 'message': 'Virhe' });
+      }
+      buildings.sort(dynamicSort("buildingName", "asc"));
+      return res.json({ 'success': true, 'message': 'Kohteet haettu onnistuneesti', buildings });
+    });
+  } else {
+    return res.json({ 'error': true, 'message': 'Käyttäjä ei kuulu yhteenkään ryhmään, ei voida näyttää rakennuksia' });
+  }
+}
 
-    if (err) {
-      return res.json({ 'success': false, 'message': 'Virhe' });
+// Dynamic OR query for matching user's groups
+function getQuery(userGroups) {
+  var query = { $or: [] };
+  if (userGroups && Array.isArray(userGroups)) {
+    for (var gr in userGroups) {
+      query.$or.push({ "dataOwner": userGroups[gr] });
     }
-    buildings.sort(dynamicSort("buildingName", "asc"));
-    return res.json({ 'success': true, 'message': 'Kohteet haettu onnistuneesti', buildings});
-  });
+  } else {
+    console.log("WARN: user doesn't belong to any group!");
+  }
+  return query;
 }
 
 export const addBuilding = (req, res) => {

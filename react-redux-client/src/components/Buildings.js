@@ -5,10 +5,12 @@ import BuildingEditForm from './BuildingEditForm';
 import FileUploadForm from './FileUploadForm';
 import FileEditForm from './FileEditForm';
 
+/**
+ * Class that handles all actions related to the view showing all buildings (i.e. first view after login)
+ */
 export default class Buildings extends React.Component {
   constructor(props) {
     super(props);
-
     this.hideEditModal = this.hideEditModal.bind(this);
     this.submitEditBuilding = this.submitEditBuilding.bind(this);
     this.hideDeleteModal = this.hideDeleteModal.bind(this);
@@ -20,23 +22,28 @@ export default class Buildings extends React.Component {
     this.searchTable = this.searchTable.bind(this);
   }
 
+  /**
+   * Add user login details (groups) to the request to the server in
+   * order to pass the correct buildings that this user is allowed to handle.
+   */
   componentDidMount() {
-    this.props.fetchBuildings();
+    const appState = this.props.mappedAppState;
+    if ( appState && appState.kc && appState.kc.keycloak ) {
+      let groups = appState.kc.keycloak.tokenParsed.groups;
+      const data = new FormData();
+      data.append('groups', JSON.stringify(groups));
+      this.props.fetchBuildings(data);
+    } 
   }
 
-  showEditModal(buildingToEdit) {
-    this.props.mappedshowEditModal(buildingToEdit);
-  }
-
-  hideEditModal() {
-    this.props.mappedhideEditModal();
-  }
-
+  /**
+   * Submit building edit action and bind the form data to the on coming request to the back end
+   * @param {} e 
+   */
   submitEditBuilding(e) {
     e.preventDefault();
     const editForm = document.getElementById('EditBuildingForm');
     if (editForm.buildingName.value !== "") {
-
       const data = new FormData();
       data.append('id', editForm.id.value);
       data.append('buildingName', editForm.buildingName.value);
@@ -51,12 +58,23 @@ export default class Buildings extends React.Component {
       data.append('buildingWarmingSystem', editForm.buildingWarmingSystem.value);
       data.append('buildingFloorsNumber', editForm.buildingFloorsNumber.value);
       data.append('buildingDesc', editForm.buildingDesc.value);
+      data.append('dataOwner', editForm.dataOwner.value);
       this.props.mappedEditBuilding(data);
     }
     else {
       return;
     }
 
+  }
+
+  // Below show, hide, confirm methods for redux cache data binding
+
+  showEditModal(buildingToEdit) {
+    this.props.mappedshowEditModal(buildingToEdit);
+  }
+
+  hideEditModal() {
+    this.props.mappedhideEditModal();
   }
 
   hideDeleteModal() {
@@ -73,9 +91,14 @@ export default class Buildings extends React.Component {
 
 
   /**
-   * FILE RELATED FUNCTIONS
+   * File handling related functions below
    */
-  // Action calls this method when submitting data
+
+  /**
+   * Bind the data needed for file upload.
+   * 
+   * File upload action calls this method when submitting data
+   */
   fileUpload = (e) => {
     e.preventDefault();
     const fileForm = document.getElementById('FileUploadForm');
@@ -94,7 +117,9 @@ export default class Buildings extends React.Component {
     }
   }
 
-  // Edit file
+  /**
+   * Edit file data binder
+   */
   fileEdit = (e) => {
     e.preventDefault();
     const fileForm = document.getElementById('FileEditForm');
@@ -110,6 +135,8 @@ export default class Buildings extends React.Component {
       return;
     }
   }
+
+  // Below redux cache data binders for download, show, hide etc.  
 
   downloadFile = (fileId, name) => {
     this.props.mappedFileDownload(fileId, name);
@@ -144,51 +171,38 @@ export default class Buildings extends React.Component {
   }
 
   /**
-  * FILE RELATED FUNCTIONS ENDS
+  * --- FILE RELATED FUNCTIONS ENDS
   */
 
-  // resetComponent = () => this.setState({ isLoading: false, results: [], oldResults: this.prop.mappedBuildingState.buildings || [], value: '' })
-
-  // handleSearchChange = (e, { value }) => {
-  //   setTimeout(() => {
-  //     this.setState({ isLoading: true, value })
-
-  //     if (this.state.value.length < 1) return this.resetComponent()
-
-  //     const re = new RegExp(_.escapeRegExp(this.state.value), 'i')
-  //     const filteredResults = _.filter(this.props.users, result => re.test(result.name))
-  //     this.setState({
-  //       isLoading: false,
-  //       results: filteredResults,
-  //       oldResults: filteredResults
-  //     })
-  //   }, 200)
-  // }
+  // Util function to filter the main table of buildings by search query
   searchTable() {
     // Declare variables 
-    var input, filter, table, tr, td, i;
+    var input, filter, table, tr, i;
+    // get the react refernce of the rendered input field
     input = this.refs.bfilter;
     if (input) {
+      // make it case insensitive
       filter = input.value.toUpperCase();
       table = this.refs.btable;
       if (table) {
         tr = table.getElementsByTagName("tr");
         // Loop through all table rows, and hide those who don't match the search query
-
         for (i = 0; i < tr.length; i++) {
           var tds = tr[i].getElementsByTagName("td");
-          var show = false;
-          for (var ix = 0; ix < tds.length; ix++) {
-            if (tds[ix]) {
-              if (tds[ix].innerHTML.toUpperCase().indexOf(filter) > -1) {
-                show = true;
+          if (tds.length > 0) {
+            var show = false;
+            for (var ix = 0; ix < tds.length; ix++) {
+              if (tds[ix]) {
+                if (tds[ix].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                  show = true;
+                }
               }
             }
-          }
-          if (show) {
-            tr[i].style.display = "";
-          } else {
-            tr[i].style.display = "none";
+            if (show) {
+              tr[i].style.display = "";
+            } else {
+              tr[i].style.display = "none";
+            }
           }
         }
 
@@ -196,8 +210,12 @@ export default class Buildings extends React.Component {
     }
   }
 
+  /**
+   * Renderer for buildings main view
+   */
   render() {
     const buildingState = this.props.mappedBuildingState;
+    const appState = this.props.mappedAppState;
     const buildings = buildingState.buildings;
     const editBuilding = buildingState.buildingToEdit;
     const addrQueryBase = "http://maps.google.com/?q=";
@@ -205,7 +223,7 @@ export default class Buildings extends React.Component {
     return (
       <div className="col-md-12">
         <h3 className="centerAlign">Kaikki kohteet</h3>
-        <div class="col-xs-3">
+        <div className="col-xs-3">
           <input type="text" ref="bfilter" onKeyUp={this.searchTable} placeholder="Hae.." className="form-control" />
         </div>
         {!buildings && buildingState.isFetching &&
@@ -217,12 +235,13 @@ export default class Buildings extends React.Component {
         {buildings && buildings.length > 0 && !buildingState.isFetching &&
           <table ref="btable" className="table buildingsTable">
             <thead>
-              <tr><th>Nimi</th><th>Rakennuksen käyttötarkoitus</th><th>Omistaja/hallinnoija</th><th>Osoite</th><th className="textCenter">Näytä</th><th className="textCenter">Muokkaa</th><th className="textCenter">Poista kohde</th><th className="textCenter">Tiedostot</th></tr>
+              <tr><th>Nimi</th><th>Rakennuksen käyttötarkoitus</th><th>Rakennusvuosi</th><th>Omistaja/hallinnoija</th><th>Osoite</th><th className="textCenter">Näytä</th><th className="textCenter">Muokkaa</th><th className="textCenter">Poista kohde</th><th className="textCenter">Tiedostot</th></tr>
             </thead>
             <tbody>
               {buildings.map((building, i) => <tr key={i}>
                 <td>{building.buildingName}</td>
                 <td>{building.buildingType}</td>
+                <td>{building.buildingYear}</td>
                 <td>{building.buildingOwner}</td>
                 <td><a target="_blank" href={addrQueryBase + building.buildingAddress + ", " + building.buildingCounty}>{building.buildingAddress}, {building.buildingCounty}</a></td>
                 <td className="textCenter"><Link to={`/${building._id}`}>Avaa rakennuksen tiedot</Link> </td>
@@ -230,9 +249,9 @@ export default class Buildings extends React.Component {
                 <td className="textCenter"><Button onClick={() => this.showDeleteModal(building)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button></td>
                 <td className="textCenter"><Button onClick={() => this.showFileUploadModal(building._id)} bsStyle="success" bsSize="xsmall"><Glyphicon glyph="plus" /> Lisää tiedosto</Button>
                   <br />
-                  {building.files.map((file, i) =>
-                    <span>
-                      <a href onClick={(e) => { e.preventDefault(); this.downloadFile(file._id, file.originalname) }} style={{ cursor: 'pointer' }}>{file.originalname}</a><span>&nbsp;
+                  {building.files.map((file, ix) =>
+                    <span key="ix">
+                      <a href="true" onClick={(e) => { e.preventDefault(); this.downloadFile(file._id, file.originalname) }} style={{ cursor: 'pointer' }}>{file.originalname}</a><span>&nbsp;
                       <Button onClick={() => this.showFileEditModal(file)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="edit" /></Button>
                         <Button onClick={() => this.showFileDeleteModal(file)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button>
                       </span>
@@ -259,7 +278,7 @@ export default class Buildings extends React.Component {
           <Modal.Body>
             <div className="col-md-12">
               {editBuilding &&
-                <BuildingEditForm buildingData={editBuilding} editBuilding={this.submitEditBuilding} />
+                <BuildingEditForm buildingData={editBuilding} editBuilding={this.submitEditBuilding} groups={appState.kc.keycloak.tokenParsed.groups} />
               }
               {editBuilding && buildingState.isFetching &&
                 <Alert bsStyle="info">

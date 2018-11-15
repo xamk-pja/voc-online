@@ -41,21 +41,25 @@ export const addNewFileFailed = (error) => {
   }
 }
 
+
 export const fileDownload = (file, name) => {
-  return (dispatch) => {
+  return () => {
     fetch(apiUrl + file)
     .then((resp) => resp.blob()) // Transform the data to blob
     .then(function(data) {
       let a = document.createElement("a");
-      let blobURL = URL.createObjectURL(data);
-      name = name.replace(/,/g , "");
-      a.download = name;
+      // let blobURL = URL.createObjectURL(data, { oneTimeOnly: true });
+      // name = name.replace(/,/g , "");
+      // a.download = name;
       
-      a.href = blobURL
-      a.target = '_blank'
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
+      var blobURL = window.URL.createObjectURL(data, { oneTimeOnly: true });
+
+      a.href = blobURL;
+      document.body.appendChild(a);
+      a.setAttribute('target', '_blank');
+      a.download = name;
+      a.click();
+      document.body.removeChild(a);
     })
   }
 }

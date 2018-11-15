@@ -9,8 +9,10 @@ export const toggleAddBuilding = () => {
     type: 'TOGGLE_ADD_BUILDING'
   }
 }
-
+//Async action for adding building
 export const addNewBuilding = (building) => {
+  // Returns a dispatcher function
+  // that dispatches an action at later time
   return (dispatch) => {
     dispatch(addNewBuildingRequest(building));
     return fetch(apiUrl, {
@@ -32,13 +34,14 @@ export const addNewBuilding = (building) => {
   }
 }
 
+// Sync redux cache state for new building request
 export const addNewBuildingRequest = (building) => {
   return {
     type: 'ADD_NEW_BUILDING_REQUEST',
     building
   }
 }
-
+// Sync redux cache state 
 export const addNewBuildingRequestSuccess = (building, message) => {
   return {
     type: 'ADD_NEW_BUILDING_REQUEST_SUCCESS',
@@ -46,7 +49,7 @@ export const addNewBuildingRequestSuccess = (building, message) => {
     message: message
   }
 }
-
+// Sync redux cache state 
 export const addNewBuildingRequestFailed = (error) => {
   return {
     type: 'ADD_NEW_BUILDING_REQUEST_FAILED',
@@ -54,16 +57,17 @@ export const addNewBuildingRequestFailed = (error) => {
   }
 }
 
-//Async action
-export const fetchBuildings = () => {
+//Async action for fetching buildings
+export const fetchBuildings = (userGroups) => {
   // Returns a dispatcher function
   // that dispatches an action at later time
   return (dispatch) => {
-
-    dispatch(fetchBuildingsRequest());
+    dispatch(fetchBuildingsRequest(userGroups));
     // Returns a promise
-    return fetch(apiUrl)
-      .then(response => {
+    return fetch(apiUrl+"fetch/", {
+      method: 'post',
+      body: userGroups
+    }).then(response => {
         if (response.ok) {
           response.json().then(data => {
             dispatch(fetchBuildingsSuccess(data.buildings, data.message));
@@ -77,15 +81,16 @@ export const fetchBuildings = () => {
       })
   }
 }
-
-export const fetchBuildingsRequest = () => {
+// Sync redux cache state 
+export const fetchBuildingsRequest = (user) => {
   return {
-    type: 'FETCH_BUILDINGS_REQUEST'
+    type: 'FETCH_BUILDINGS_REQUEST',
+    user
   }
 }
 
 
-//Sync action
+// Sync redux cache state 
 export const fetchBuildingsSuccess = (buildings, message) => {
   return {
     type: 'FETCH_BUILDINGS_SUCCESS',
@@ -94,7 +99,7 @@ export const fetchBuildingsSuccess = (buildings, message) => {
     receivedAt: Date.now
   }
 }
-
+// Sync redux cache state 
 export const fetchBuildingsFailed = (error) => {
   return {
     type: 'FETCH_BUILDINGS_FAILED',
@@ -102,7 +107,7 @@ export const fetchBuildingsFailed = (error) => {
   }
 }
 
-// Returns a promise for building
+// Returns a promise for fetching a building by id
 export const fetchBuildingById = (buildingId) => {
   return (dispatch) => {
     dispatch(fetchBuildingRequest());
@@ -124,7 +129,7 @@ export const fetchBuildingById = (buildingId) => {
 
   }
 }
-
+// Sync redux cache state 
 export const fetchBuildingRequest = () => {
   return {
     type: 'FETCH_BUILDING_REQUEST'
@@ -132,7 +137,7 @@ export const fetchBuildingRequest = () => {
 }
 
 
-//Sync action
+// Sync redux cache state 
 export const fetchBuildingSuccess = (building, message) => {
   return {
     type: 'FETCH_BUILDING_SUCCESS',
@@ -141,27 +146,28 @@ export const fetchBuildingSuccess = (building, message) => {
     receivedAt: Date.now
   }
 }
-
+// Sync redux cache state 
 export const fetchBuildingFailed = (error) => {
   return {
     type: 'FETCH_BUILDING_FAILED',
     error
   }
 }
-
+// Sync redux cache state 
 export const showEditModal = (buildingToEdit) => {
   return {
     type: 'SHOW_EDIT_MODAL',
     building: buildingToEdit
   }
 }
-
+// Sync redux cache state 
 export const hideEditModal = () => {
   return {
     type: 'HIDE_EDIT_MODAL'
   }
 }
 
+// edit building async function
 export const editBuilding = (building) => {
   return (dispatch) => {
     dispatch(editBuildingRequest(building));
@@ -182,14 +188,14 @@ export const editBuilding = (building) => {
     })
   }
 }
-
+// Sync redux cache state 
 export const editBuildingRequest = (building) => {
   return {
     type: 'EDIT_BUILDING_REQUEST',
     building
   }
 }
-
+// Sync redux cache state 
 export const editBuildingSuccess = (building, message) => {
   return {
     type: 'EDIT_BUILDING_SUCCESS',
@@ -197,14 +203,14 @@ export const editBuildingSuccess = (building, message) => {
     message: message
   }
 }
-
+// Sync redux cache state 
 export const editBuildingFailed = (error) => {
   return {
     type: 'EDIT_BUILDING_FAILED',
     error
   }
 }
-
+// Delete building async function
 export const deleteBuilding = (building) => {
   return (dispatch) => {
     dispatch(deleteBuildingRequest(building));
@@ -225,41 +231,42 @@ export const deleteBuilding = (building) => {
 
   }
 }
-
+// Sync redux cache state 
 export const deleteBuildingRequest = (building) => {
   return {
     type: 'DELETE_BUILDING_REQUEST',
     building
   }
 }
+// Sync redux cache state 
 export const deleteBuildingSuccess = (message) => {
   return {
     type: 'DELETE_BUILDING_SUCCESS',
     message: message
   }
 }
-
+// Sync redux cache state 
 export const deleteBuildingFailed = (error) => {
   return {
     type: 'DELETE_BUILDING_FAILED',
     error
   }
 }
-
+// Sync redux cache state 
 export const showDeleteModal = (buildingToDelete) => {
   return {
     type: 'SHOW_DELETE_MODAL',
     building: buildingToDelete
   }
 }
-
+// Sync redux cache state 
 export const hideDeleteModal = () => {
   return {
     type: 'HIDE_DELETE_MODAL'
   }
 }
 
-/* Should add new calc point for parent building */
+// Add new calc point (mittauspaikka) for a buidling async action
 export const addNewCalcPoint = (calcPoint) => {
 
   return (dispatch) => {
@@ -283,14 +290,14 @@ export const addNewCalcPoint = (calcPoint) => {
     })
   }
 }
-
+// Sync redux cache state 
 export const addNewCalcPointRequest = (calcPoint) => {
   return {
     type: 'ADD_NEW_CP_REQUEST',
     calcPoint
   }
 }
-
+// Sync redux cache state 
 export const addNewCalcPointRequestSuccess = (calcPoint, message) => {
   return {
     type: 'ADD_NEW_CP_REQUEST_SUCCESS',
@@ -298,7 +305,7 @@ export const addNewCalcPointRequestSuccess = (calcPoint, message) => {
     successMsg: message
   }
 }
-
+// Sync redux cache state 
 export const addNewCalcPointRequestFailed = (error) => {
   return {
     type: 'ADD_NEW_CP_REQUEST_FAILED',
@@ -306,6 +313,7 @@ export const addNewCalcPointRequestFailed = (error) => {
   }
 }
 
+// Edit calc point (mittauspaikka) for a building async action
 export const editCalcPoint = (calcPointToEdit) => {
   return (dispatch) => {
     dispatch(editBuildingCalcPointRequest(calcPointToEdit));
@@ -327,8 +335,7 @@ export const editCalcPoint = (calcPointToEdit) => {
   }
 }
 
-// Calculation position that's linked to a building
-
+// Sync redux cache state 
 export const addCalcPointModal = () => {
   return {
     type: 'ADD_CP_MODAL'
@@ -336,20 +343,20 @@ export const addCalcPointModal = () => {
 
   }
 }
-
+// Sync redux cache state 
 export const hideCalcPointAddModal = () => {
   return {
     type: 'HIDE_CP_ADD_MODAL'
   }
 }
 
-
+// Sync redux cache state 
 export const hideCalcPointEditModal = () => {
   return {
     type: 'HIDE_CP_EDIT_MODAL'
   }
 }
-
+// Sync redux cache state 
 export const showCalcPointEditModal = (calcPointToEdit) => {
   return {
     type: 'EDIT_CP_MODAL',
@@ -357,14 +364,14 @@ export const showCalcPointEditModal = (calcPointToEdit) => {
   }
 }
 
-
+// Sync redux cache state 
 export const editBuildingCalcPointRequest = (calcPointToEdit) => {
   return {
     type: 'EDIT_CP_REQUEST',
     calcPointToEdit
   }
 }
-
+// Sync redux cache state 
 export const editBuildingCalcPointSuccess = (calcPointToEdit, message) => {
   return {
     type: 'EDIT_CP_SUCCESS',
@@ -372,7 +379,7 @@ export const editBuildingCalcPointSuccess = (calcPointToEdit, message) => {
     successMsg: message
   }
 }
-
+// Sync redux cache state 
 export const editBuildingCalcPointFailed = (error) => {
   return {
     type: 'EDIT_CP_FAILED',
@@ -380,7 +387,7 @@ export const editBuildingCalcPointFailed = (error) => {
   }
 }
 
-
+// Delete calc point (mittauspaikka) from building async action
 export const deleteCalcPoint = (calcPoint) => {
   return (dispatch) => {
     dispatch(deleteCalcPointRequest(calcPoint));
@@ -401,154 +408,37 @@ export const deleteCalcPoint = (calcPoint) => {
 
   }
 }
-
+// Sync redux cache state 
 export const deleteCalcPointRequest = (calcPoint) => {
   return {
     type: 'DELETE_CP_REQUEST',
     calcPoint
   }
 }
-
+// Sync redux cache state 
 export const deleteCalcPointSuccess = (message) => {
   return {
     type: 'DELETE_CP_SUCCESS',
     successMsg: message
   }
 }
-
+// Sync redux cache state 
 export const deleteCalcPointFailed = (error) => {
   return {
     type: 'DELETE_CP_FAILED',
     error
   }
 }
-
+// Sync redux cache state 
 export const showCalcPointDeleteModal = (calcPoint) => {
   return {
     type: 'SHOW_DELETE_CP_MODAL',
     calcPointToDelete: calcPoint
   }
 }
-
+// Sync redux cache state 
 export const hideCalcPointDeleteModal = () => {
   return {
     type: 'HIDE_DELETE_CP_MODAL'
-  }
-}
-
-/*
- * File upload: TODO: fix upload if many uploads are done in the row
- */
-export const showFileUploadModal = (parentId) => {
-  if (parentId !== null) {
-    return {
-      type: 'SHOW_FILE_UPLOAD_MODAL',
-      fileParent: parentId
-    }
-  }
-}
-
-export const hideFileUploadModal = () => {
-  return {
-    type: 'HIDE_FILE_UPLOAD_MODAL'
-  }
-}
-
-export const addNewFileRequest = (file) => {
-  return {
-    type: 'ADD_NEW_FILE_REQUEST',
-    file
-  }
-}
-
-export const addNewFileRequestSuccess = (addedfile, parentobj, message) => {
-  return {
-    type: 'ADD_NEW_FILE_REQUEST_SUCCESS',
-    fileParent: parentobj,
-    file: addedfile,
-    successMsg: message
-  }
-}
-
-export const addNewFileFailed = (error) => {
-  return {
-    type: 'ADD_NEW_FILE_FAILED',
-    error
-  }
-}
-
-// File edits
-export const showFileEditModal = (fileToEdit) => {
-  if (fileToEdit !== null) {
-    return {
-      type: 'SHOW_FILE_EDIT_MODAL',
-      fileToEdit: fileToEdit
-    }
-  }
-}
-
-export const hideFileEditModal = () => {
-  return {
-    type: 'HIDE_FILE_EDIT_MODAL'
-  }
-}
-
-// File deletion
-export const showFileDeleteModal = (fileToDelete) => {
-  if (fileToDelete !== null) {
-    return {
-      type: 'SHOW_FILE_DELETE_MODAL',
-      fileToDelete: fileToDelete
-    }
-  }
-}
-
-export const hideFileDeleteModal = () => {
-  return {
-    type: 'HIDE_FILE_DELETE_MODAL'
-  }
-}
-
-export const deleteFile = (file) => {
-  return (dispatch) => {
-    dispatch(deleteFileRequest(file));
-    return fetch(apiUrl + "/files/" + file._id+"/"+file.parentId, {
-      method: 'delete'
-    }).then(response => {
-      if (response.ok) {
-        response.json().then(data => {
-          dispatch(deleteFileSuccess(data.objid, data.pid, data.message));
-        })
-      }
-      else {
-        response.json().then(error => {
-          dispatch(deleteFileFailed(error));
-        })
-      }
-    })
-
-  }
-}
-
-export const deleteFileRequest = (file) => {
-  return {
-    type: 'DELETE_FILE_REQUEST',
-    file
-  }
-}
-
-export const deleteFileSuccess = (objid, pid, message) => {
-  return {
-    type: 'DELETE_FILE_REQUEST_SUCCESS',
-    fileToDelete: objid,
-    fileParent: pid,
-    successMsg: message
-  }
-}
-
-export const deleteFileFailed = (error) => {
-  return {
-    type: 'DELETE_FILE_FAILED',
-    error
   }
 }

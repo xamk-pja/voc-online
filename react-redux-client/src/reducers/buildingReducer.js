@@ -1,4 +1,13 @@
 // ./react-redux-client/src/reducers/buildingReducer.js
+
+/**
+ * Redux reducer for building data
+ * 
+ * This class is now massive, because it contains all the states that buildings. Keeps up the state in the browser for objects mapped here. 
+ * 
+ * TIP: use ReduxDevTools in Chrome browser to visualize this data on actual running instance.
+ */
+
 const INITIAL_STATE = {
   buildings: [],
   building: null,
@@ -1229,8 +1238,6 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
       // update cache for file added to be visible on main listing
       var fileid = action.fileToDelete;
       var parentId = action.fileParent;
-      var cp = currentState.calcPoints;
-      var results = currentState.results;
 
       // Filter removed file from building's files
       const fileRemoveUpdatedBuildings = currentState.buildings.map((building) => {

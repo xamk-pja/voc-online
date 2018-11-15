@@ -57,6 +57,9 @@ var BuildingSchema = mongoose.Schema({
   // Lisätietoja
   buildingDesc: String,
 
+  // DATA OWNER, DEFINED IN KEYCLOAK GROUPS!
+  dataOwner: String,
+
   createdAt: {
     type: Date,
     default: Date.now

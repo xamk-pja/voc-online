@@ -4,6 +4,10 @@ import { combineReducers } from 'redux';
 import appReducer from './appReducer';
 import {buildingReducer} from './buildingReducer';
 
+
+/**
+ * Combine redux reducers
+ */
 export default combineReducers({
   appState:appReducer,
   buildingState:buildingReducer,

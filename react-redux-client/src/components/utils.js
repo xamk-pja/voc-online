@@ -1,17 +1,30 @@
 import React from 'react';
 
 // Get enum types for building types from schema
-
 export const getLabelFor = (param, selected) => {
   var options = getTypesFor(param);
-
-  console.log(options);
   for ( var i in options ) {
     if ( options[i].key === selected ) {
       return options[i].props.children;
     }
   }
   return null;
+}
+
+/**
+ * Parse groups that comes from Keycloak user instance
+ * 
+ * Returns items for select list in GUI
+ * @param {} userGroups 
+ */
+export const parseGroups = (userGroups) => {
+  let items = [];
+
+  for (var g in userGroups) {
+    items.push((<option key={userGroups[g]} value={userGroups[g]}>
+      {userGroups[g].replace(/^\//, '')}</option>));
+  }
+  return items;
 }
 
 // If time permits, add these mappings to schema and figure out how to render these using react from mongoose..

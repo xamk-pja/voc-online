@@ -1,17 +1,19 @@
 // ./react-redux-client/src/App.js
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
-import { Router, browserHistory } from 'react-router';
-import PropTypes from 'prop-types';
+import { browserHistory, Router } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
-import configureStore from './store/configureStore';
-import routes from './routes';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
-import Keycloak from 'keycloak-js';
+import routes from './routes';
+import configureStore from './store/configureStore';
 
 const store = configureStore();
 const history = syncHistoryWithStore(browserHistory, store);
 
+/**
+ * Main App function
+ */
 class App extends Component {
 
   render() {

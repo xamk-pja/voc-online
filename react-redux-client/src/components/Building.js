@@ -124,10 +124,10 @@ export default class Building extends React.Component {
           </div>
         }
         {buildingState.building && !buildingState.isFetching &&
-          <div class="container">
+          <div className="container">
           <h3>Rakennuksen tiedot</h3>
-            <div class="row">
-              <div class="col-xs-6">
+            <div className="row">
+              <div className="col-xs-6">
             <h4>{buildingState.building.buildingName}</h4>
             <p><b>Osoite: </b>{buildingState.building.buildingAddress}, {buildingState.building.buildingCounty}</p>
             <p><b>Omistaja/hallinnoija: </b>{buildingState.building.buildingOwner}</p>
@@ -141,7 +141,7 @@ export default class Building extends React.Component {
             <p><b>Lisätiedot: </b>{buildingState.building.buildingDesc}</p>
             <p><b>Rakennuksen ID: </b>{buildingState.building._id}</p>
             </div>
-            <div class="col-xs-6">
+            <div className="col-xs-6">
             <b><u>Rakennuksen tiedostot:</u></b>
                 {/* <Button onClick={() => this.showFileUploadModal(building._id)} bsStyle="success" bsSize="xsmall"><Glyphicon glyph="plus" /> Lisää tiedosto</Button> */}
                   <table className="table booksTable">
@@ -149,10 +149,10 @@ export default class Building extends React.Component {
                     <tr><th>Tiedoston kuvaus</th><th>Lataa</th></tr>
                   </thead>
                   <tbody>
-                  {building.files.map((file, i) =>
-                    <tr>
+                  {building.files.map((file, ix) =>
+                    <tr key={ix}>
                     <td>{file.fileDesc}</td>
-                    <td><a href onClick={(e) => {e.preventDefault(); this.downloadFile(file._id, file.originalname)}} style={{cursor:'pointer'}}>{file.originalname}</a></td>
+                    <td><a href="true" onClick={(e) => {e.preventDefault(); this.downloadFile(file._id, file.originalname)}} style={{cursor:'pointer'}}>{file.originalname}</a></td>
                     </tr>
                   )}
                   </tbody>
