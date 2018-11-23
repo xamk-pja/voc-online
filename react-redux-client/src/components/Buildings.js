@@ -215,11 +215,16 @@ export default class Buildings extends React.Component {
    */
   render() {
     const buildingState = this.props.mappedBuildingState;
-    const appState = this.props.mappedAppState;
     const buildings = buildingState.buildings;
     const editBuilding = buildingState.buildingToEdit;
     const addrQueryBase = "http://maps.google.com/?q=";
-
+    const appState = this.props.mappedAppState;
+    var canEdit = false;
+    if ( appState.kc.keycloak.realmAccess ) {
+      canEdit = appState.kc.keycloak.realmAccess.roles.indexOf('editor') > -1 ||
+      appState.kc.keycloak.realmAccess.roles.indexOf('admin') > -1 ;
+    }
+   
     return (
       <div className="col-md-12">
         <h3 className="centerAlign">Kaikki kohteet</h3>
@@ -235,7 +240,18 @@ export default class Buildings extends React.Component {
         {buildings && buildings.length > 0 && !buildingState.isFetching &&
           <table ref="btable" className="table buildingsTable">
             <thead>
-              <tr><th>Nimi</th><th>Rakennuksen käyttötarkoitus</th><th>Rakennusvuosi</th><th>Omistaja/hallinnoija</th><th>Osoite</th><th className="textCenter">Näytä</th><th className="textCenter">Muokkaa</th><th className="textCenter">Poista kohde</th><th className="textCenter">Tiedostot</th></tr>
+              <tr><th>Nimi</th><th>Rakennuksen käyttötarkoitus</th>
+              <th>Rakennusvuosi</th>
+              <th>Omistaja/hallinnoija</th>
+              <th>Osoite</th>
+              <th className="textCenter">Näytä</th>
+              {canEdit &&
+              <th className="textCenter">Muokkaa</th>
+              }
+              {canEdit &&
+              <th className="textCenter">Poista kohde</th>
+              }
+              <th className="textCenter">Tiedostot</th></tr>
             </thead>
             <tbody>
               {buildings.map((building, i) => <tr key={i}>
@@ -245,15 +261,32 @@ export default class Buildings extends React.Component {
                 <td>{building.buildingOwner}</td>
                 <td><a target="_blank" href={addrQueryBase + building.buildingAddress + ", " + building.buildingCounty}>{building.buildingAddress}, {building.buildingCounty}</a></td>
                 <td className="textCenter"><Link to={`/${building._id}`}>Avaa rakennuksen tiedot</Link> </td>
-                <td className="textCenter"><Button onClick={() => this.showEditModal(building)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="edit" /></Button></td>
-                <td className="textCenter"><Button onClick={() => this.showDeleteModal(building)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button></td>
-                <td className="textCenter"><Button onClick={() => this.showFileUploadModal(building._id)} bsStyle="success" bsSize="xsmall"><Glyphicon glyph="plus" /> Lisää tiedosto</Button>
-                  <br />
+                {canEdit &&
+                <td className="textCenter">
+                    <Button onClick={() => this.showEditModal(building)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="edit" /></Button> 
+                </td>
+                }
+                {canEdit &&
+                <td className="textCenter">
+                    <Button onClick={() => this.showDeleteModal(building)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button>
+                </td>
+                }
+                <td className="textCenter">
+                  {canEdit &&
+                    <Button onClick={() => this.showFileUploadModal(building._id)} bsStyle="success" bsSize="xsmall"><Glyphicon glyph="plus" /> Lisää tiedosto</Button>
+                  }
+                  {canEdit &&
+                    <br />
+                  }
                   {building.files.map((file, ix) =>
                     <span key="ix">
                       <a href="true" onClick={(e) => { e.preventDefault(); this.downloadFile(file._id, file.originalname) }} style={{ cursor: 'pointer' }}>{file.originalname}</a><span>&nbsp;
-                      <Button onClick={() => this.showFileEditModal(file)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="edit" /></Button>
-                        <Button onClick={() => this.showFileDeleteModal(file)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button>
+                        {canEdit &&
+                          <Button onClick={() => this.showFileEditModal(file)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="edit" /></Button>
+                        }
+                        {canEdit &&
+                          <Button onClick={() => this.showFileDeleteModal(file)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button>
+                        }
                       </span>
                       <br />
                     </span>

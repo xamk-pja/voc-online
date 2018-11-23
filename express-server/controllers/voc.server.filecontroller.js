@@ -36,7 +36,7 @@ export const uploadFile = (req, res) => {
 
 
   GFS.findOne({ '_id': file.id }, function (err, dbfile) {
-    console.log('Passing more metadata for uploaded file: ' + file.originalname);
+    console.log('Setting metadata for uploaded file: ' + file.originalname);
     dbfile.set('originalname', origname);
     dbfile.set('parentId', parentId);
     dbfile.set('fileDesc', fileDesc);
@@ -109,7 +109,7 @@ export const updateParentObject = (obj, file, res) => {
 }
 
 export const updateFile = (req, res) => {
-  console.log("PUT /updateFile: going to update file..." + req.body.id);
+  console.log("PUT /updateFile: going to update file metadata: " + req.body.id);
 
   GFS.findOne({ '_id': req.body.id }, function (err, dbfile) {
     dbfile.set('fileDesc', req.body.fileDesc);

@@ -24,8 +24,8 @@ export default class Building extends React.Component {
 
     this.showCalcPointDeleteModal = this.showCalcPointDeleteModal.bind(this);
     this.hideCalcPointDeleteModal = this.hideCalcPointDeleteModal.bind(this);
-    this.cofirmDeleteCalcPoint = this.cofirmDeleteCalcPoint.bind(this);    
-    
+    this.cofirmDeleteCalcPoint = this.cofirmDeleteCalcPoint.bind(this);
+
   }
 
   componentDidMount() {
@@ -52,7 +52,7 @@ export default class Building extends React.Component {
       data.append('cpRoofMaterial', editForm.cpRoofMaterial.value);
       data.append('cpCeilingMaterial', editForm.cpCeilingMaterial.value);
       data.append('cpVentilation', editForm.cpVentilation.value);
-      data.append('longDesc', editForm.longDesc.value);      
+      data.append('longDesc', editForm.longDesc.value);
       data.append('parent', this.props.params.id);
       this.props.mappedAddCalcPoint(data);
     }
@@ -116,6 +116,13 @@ export default class Building extends React.Component {
     const calcPoints = buildingState.calcPoints;
     const building = buildingState.building;
 
+    const appState = this.props.mappedAppState;
+    var canEdit = false;
+    if (appState.kc.keycloak.realmAccess) {
+      canEdit = appState.kc.keycloak.realmAccess.roles.indexOf('editor') > -1 ||
+        appState.kc.keycloak.realmAccess.roles.indexOf('admin') > -1;
+    }
+
     return (
       <div className="buildingDetail">
         {!buildingState.building && buildingState.isFetching &&
@@ -125,49 +132,65 @@ export default class Building extends React.Component {
         }
         {buildingState.building && !buildingState.isFetching &&
           <div className="container">
-          <h3>Rakennuksen tiedot</h3>
+            <h3>Rakennuksen tiedot</h3>
             <div className="row">
               <div className="col-xs-6">
-            <h4>{buildingState.building.buildingName}</h4>
-            <p><b>Osoite: </b>{buildingState.building.buildingAddress}, {buildingState.building.buildingCounty}</p>
-            <p><b>Omistaja/hallinnoija: </b>{buildingState.building.buildingOwner}</p>
-            <p><b>Rakennusvuosi: </b>{buildingState.building.buildingYear}</p>
-            <p><b>Käyttötarkoitus: </b>{getLabelFor('buildingType', buildingState.building.buildingType)}</p>
-            <p><b>Runkorakenne: </b>{getLabelFor('buildingMaterial', buildingState.building.buildingMaterial)}</p>
-            <p><b>Alapohjarakenne: </b>{getLabelFor('buildingFloorBase', buildingState.building.buildingFloorBase)}</p>
-            <p><b>Katto: </b>{getLabelFor('buildingRoof', buildingState.building.buildingRoof)}</p>
-            <p><b>Lämmitysmuoto: </b>{getLabelFor('buildingWarmingSystem', buildingState.building.buildingWarmingSystem)}</p>
-            <p><b>Kerrosluku: </b>{buildingState.building.buildingFloorsNumber}</p>
-            <p><b>Lisätiedot: </b>{buildingState.building.buildingDesc}</p>
-            <p><b>Rakennuksen ID: </b>{buildingState.building._id}</p>
-            </div>
-            <div className="col-xs-6">
-            <b><u>Rakennuksen tiedostot:</u></b>
+                <h4>{buildingState.building.buildingName}</h4>
+                <p><b>Osoite: </b>{buildingState.building.buildingAddress}, {buildingState.building.buildingCounty}</p>
+                <p><b>Omistaja/hallinnoija: </b>{buildingState.building.buildingOwner}</p>
+                <p><b>Rakennusvuosi: </b>{buildingState.building.buildingYear}</p>
+                <p><b>Käyttötarkoitus: </b>{getLabelFor('buildingType', buildingState.building.buildingType)}</p>
+                <p><b>Runkorakenne: </b>{getLabelFor('buildingMaterial', buildingState.building.buildingMaterial)}</p>
+                <p><b>Alapohjarakenne: </b>{getLabelFor('buildingFloorBase', buildingState.building.buildingFloorBase)}</p>
+                <p><b>Katto: </b>{getLabelFor('buildingRoof', buildingState.building.buildingRoof)}</p>
+                <p><b>Lämmitysmuoto: </b>{getLabelFor('buildingWarmingSystem', buildingState.building.buildingWarmingSystem)}</p>
+                <p><b>Kerrosluku: </b>{buildingState.building.buildingFloorsNumber}</p>
+                <p><b>Lisätiedot: </b>{buildingState.building.buildingDesc}</p>
+                <p><b>Rakennuksen ID: </b>{buildingState.building._id}</p>
+              </div>
+              <div className="col-xs-6">
+                <b><u>Rakennuksen tiedostot:</u></b>
                 {/* <Button onClick={() => this.showFileUploadModal(building._id)} bsStyle="success" bsSize="xsmall"><Glyphicon glyph="plus" /> Lisää tiedosto</Button> */}
-                  <table className="table booksTable">
+                <table className="table booksTable">
                   <thead>
                     <tr><th>Tiedoston kuvaus</th><th>Lataa</th></tr>
                   </thead>
                   <tbody>
-                  {building.files.map((file, ix) =>
-                    <tr key={ix}>
-                    <td>{file.fileDesc}</td>
-                    <td><a href="true" onClick={(e) => {e.preventDefault(); this.downloadFile(file._id, file.originalname)}} style={{cursor:'pointer'}}>{file.originalname}</a></td>
-                    </tr>
-                  )}
+                    {building.files.map((file, ix) =>
+                      <tr key={ix}>
+                        <td>{file.fileDesc}</td>
+                        <td><a href="true" onClick={(e) => { e.preventDefault(); this.downloadFile(file._id, file.originalname) }} style={{ cursor: 'pointer' }}>{file.originalname}</a></td>
+                      </tr>
+                    )}
                   </tbody>
-                  </table>
-            <hr />
+                </table>
+                <hr />
+              </div>
             </div>
-          </div>
-          <hr />
+            <hr />
             <h4><b>Rakennuksen mittauspaikat:</b></h4>
+            {canEdit &&
             <p>Lisää uusi mittauspaikka: <Button type="button" className="btn btn-primary" bsStyle="success" onClick={this.showAddCalcPointModal} bsSize="xsmall"><Glyphicon glyph="plus" /></Button></p>
-
+            }
             {buildingState.building.calcPoints &&
               <table className="table booksTable">
                 <thead>
-                  <tr><th>Tilan nimi / numero</th><th>Kerros</th><th>Lattiamateriaali</th><th>Kattomateriaali</th><th>Seinämateriaali</th><th>Ilmanvaihto</th><th>Lisätiedot</th><th className="textCenter">Mittaustulokset</th><th className="textCenter">Muokkaa mittauspaikkaa</th><th className="textCenter">Poista mittauspaikka</th></tr>
+                  <tr>
+                    <th>Tilan nimi / numero</th>
+                    <th>Kerros</th>
+                    <th>Lattiamateriaali</th>
+                    <th>Kattomateriaali</th>
+                    <th>Seinämateriaali</th>
+                    <th>Ilmanvaihto</th>
+                    <th>Lisätiedot</th>
+                    <th className="textCenter">Mittaustulokset</th>
+                    {canEdit &&
+                      <th className="textCenter">Muokkaa mittauspaikkaa</th>
+                    }
+                    {canEdit &&
+                      <th className="textCenter">Poista mittauspaikka</th>
+                    }
+                  </tr>
                 </thead>
                 <tbody>
                   {calcPoints.map((calcPoint, i) => <tr key={i}>
@@ -179,27 +202,17 @@ export default class Building extends React.Component {
                     <td>{getLabelFor('cpVentilation', calcPoint.cpVentilation)}</td>
                     <td>{calcPoint.longDesc}</td>
                     <td className="textCenter"><Link to={`/results/${calcPoint._id}`}>Avaa</Link> </td>
-                    <td className="textCenter"><Button onClick={() => this.showCalcPointEditModal(calcPoint)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="edit" /></Button></td>
-                    <td className="textCenter"><Button onClick={() => this.showCalcPointDeleteModal(calcPoint)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button></td>
+                    {canEdit &&
+                      <td className="textCenter"><Button onClick={() => this.showCalcPointEditModal(calcPoint)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="edit" /></Button></td>
+                    }
+                    {canEdit &&
+                      <td className="textCenter"><Button onClick={() => this.showCalcPointDeleteModal(calcPoint)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button></td>
+                    }
                   </tr>)
                   }
                 </tbody>
               </table>
             }
-
-
-
-
-            {/*Add new calc point with null id?*/}
-            {/* <p><Button onClick={() => this.openCPModal()} bsStyle="new" bsSize="xsmall"><Glyphicon glyph="pencil" /></Button></p> */}
-
-
-
-            {/*TODO: jatka tästä, ao:n pitäisi siis muokata valittuja calc pointteja, lisäys uupuu
-          
-          looppaa läpi olemassaolevien calcpointtien ja näytä editit niille ao. riveillä.*/}
-            {/* <p><Button onClick={() => this.showCalcPointEditModal(buildingState.building.calcPoint)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="pencil" /></Button></p> */}
-
 
             {/* Modal for adding calc point*/}
             <Modal

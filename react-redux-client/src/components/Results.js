@@ -180,11 +180,15 @@ export default class Results extends React.Component {
 
     // these values changes according to the state - keep that in mind!
     const buildingState = this.props.mappedBuildingState;
-    // const calcPoint = buildingState.calcPoint;
     const addedResult = buildingState.addedResult;
     const results = buildingState.results;
     const resultToEdit = buildingState.resultToEdit;
-    // const building = buildingState.building;
+    const appState = this.props.mappedAppState;
+    var canEdit = false;
+    if (appState.kc.keycloak.realmAccess) {
+      canEdit = appState.kc.keycloak.realmAccess.roles.indexOf('editor') > -1 ||
+        appState.kc.keycloak.realmAccess.roles.indexOf('admin') > -1;
+    }
 
     return (
       <div className="resultsDetail">
@@ -210,7 +214,19 @@ export default class Results extends React.Component {
             {results && results.length > 0 && !buildingState.isFetching &&
               <table className="table booksTable">
                 <thead>
-                  <tr><th>Mittauksen ajankohta</th><th>Sää</th><th>Tulokset</th><th>Käytetty mittalaite</th><th>Lisätiedot</th><th className="textCenter">Muokkaa</th><th className="textCenter">Poista kohde</th><th className="textCenter">Tiedostot</th></tr>
+                  <tr><th>Mittauksen ajankohta</th>
+                    <th>Sää</th>
+                    <th>Tulokset</th>
+                    <th>Käytetty mittalaite</th>
+                    <th>Lisätiedot</th>
+                    {canEdit &&
+                      <th className="textCenter">Muokkaa</th>
+                    }
+                    {canEdit &&
+                      <th className="textCenter">Poista kohde</th>
+                    }
+                    <th className="textCenter">Tiedostot</th>
+                  </tr>
                 </thead>
                 <tbody>
                   {results.map((result, i) => <tr key={i}>
@@ -219,17 +235,29 @@ export default class Results extends React.Component {
                     <td>{getLabelFor('measurementMetrics', result.measurementMetrics)}</td>
                     <td>{getLabelFor('usedMetrics', result.usedMetrics)}</td>
                     <td>{result.resultDetails}</td>
-                    <td className="textCenter"><Button onClick={() => this.showEditResultModal(result)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="edit" /></Button></td>
-                    <td className="textCenter"><Button onClick={() => this.showDeleteResultModal(result)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button></td>
-                    <td className="textCenter"><Button onClick={() => this.showFileUploadModal(result._id)} bsStyle="success" bsSize="xsmall"><Glyphicon glyph="plus" /> Lisää tiedosto</Button>
-                      <br />
+                    {canEdit &&
+                      <td className="textCenter"><Button onClick={() => this.showEditResultModal(result)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="edit" /></Button></td>
+                    }
+                    {canEdit &&
+                      <td className="textCenter"><Button onClick={() => this.showDeleteResultModal(result)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button></td>
+                    }
+
+                    <td className="textCenter">
+                      {canEdit &&
+                        <Button onClick={() => this.showFileUploadModal(result._id)} bsStyle="success" bsSize="xsmall"><Glyphicon glyph="plus" /> Lisää tiedosto</Button>
+                      }
+                      {canEdit &&
+                        <br />
+                      }
                       {result.files.map((file, ix) =>
                         <span key={ix}>
-                          <a href="true" onClick={(e) => {e.preventDefault(); this.downloadFile(file._id, file.originalname)}} style={{cursor:'pointer'}}>{file.originalname}</a>
+                          <a href="true" onClick={(e) => { e.preventDefault(); this.downloadFile(file._id, file.originalname) }} style={{ cursor: 'pointer' }}>{file.originalname}</a>
+                          {canEdit &&
                           <span>&nbsp;
                             <Button onClick={() => this.showFileEditModal(file)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="edit" /></Button>
                             <Button onClick={() => this.showFileDeleteModal(file)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button>
                           </span>
+                          }
                           <br />
                         </span>
                       )}

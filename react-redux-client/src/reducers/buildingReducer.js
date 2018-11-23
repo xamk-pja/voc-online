@@ -3,7 +3,8 @@
 /**
  * Redux reducer for building data
  * 
- * This class is now massive, because it contains all the states that buildings. Keeps up the state in the browser for objects mapped here. 
+ * This class SHOULD BE REFACTORED and it's now massive because it contains all the states that buildings...
+ * It keeps up the state in the browser for objects mapped here. 
  * 
  * TIP: use ReduxDevTools in Chrome browser to visualize this data on actual running instance.
  */
