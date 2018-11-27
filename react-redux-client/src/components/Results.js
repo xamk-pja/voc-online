@@ -212,7 +212,7 @@ export default class Results extends React.Component {
               <p>Ei kohteita saatavilla.</p>
             }
             {results && results.length > 0 && !buildingState.isFetching &&
-              <table className="table booksTable">
+              <table className="table vocTable">
                 <thead>
                   <tr><th>Mittauksen ajankohta</th>
                     <th>Sää</th>

@@ -7,8 +7,6 @@ export const getBuildings = (req, res) => {
   if (req.body.groups) {
     var userGroups = JSON.parse(req.body.groups);
     Building.find(getQuery(userGroups)).populate('files').exec((err, buildings) => {
-      console.log("buildings found: " + buildings);
-
       if (err) {
         return res.json({ 'success': false, 'message': 'Virhe' });
       }

@@ -96,6 +96,10 @@ export default class App extends React.Component {
             {this.props.children}
           </div>
         }
+
+        {/* {appState.kc && appState.kc.authenticated &&
+          <footer
+        } */}
       </div>
     );
   }

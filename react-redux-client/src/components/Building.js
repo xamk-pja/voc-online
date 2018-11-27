@@ -151,7 +151,7 @@ export default class Building extends React.Component {
               <div className="col-xs-6">
                 <b><u>Rakennuksen tiedostot:</u></b>
                 {/* <Button onClick={() => this.showFileUploadModal(building._id)} bsStyle="success" bsSize="xsmall"><Glyphicon glyph="plus" /> Lisää tiedosto</Button> */}
-                <table className="table booksTable">
+                <table className="table vocTable">
                   <thead>
                     <tr><th>Tiedoston kuvaus</th><th>Lataa</th></tr>
                   </thead>
@@ -173,7 +173,7 @@ export default class Building extends React.Component {
             <p>Lisää uusi mittauspaikka: <Button type="button" className="btn btn-primary" bsStyle="success" onClick={this.showAddCalcPointModal} bsSize="xsmall"><Glyphicon glyph="plus" /></Button></p>
             }
             {buildingState.building.calcPoints &&
-              <table className="table booksTable">
+              <table className="table vocTable">
                 <thead>
                   <tr>
                     <th>Tilan nimi / numero</th>

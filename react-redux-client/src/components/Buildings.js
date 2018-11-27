@@ -28,11 +28,12 @@ export default class Buildings extends React.Component {
    */
   componentDidMount() {
     const appState = this.props.mappedAppState;
+
     if ( appState && appState.kc && appState.kc.keycloak ) {
       let groups = appState.kc.keycloak.tokenParsed.groups;
       const data = new FormData();
       data.append('groups', JSON.stringify(groups));
-      this.props.fetchBuildings(data);
+      this.props.fetchBuildings(data);      
     } 
   }
 
@@ -226,9 +227,9 @@ export default class Buildings extends React.Component {
     }
    
     return (
-      <div className="col-md-12">
-        <h3 className="centerAlign">Kaikki kohteet</h3>
-        <div className="col-xs-3">
+      <div className="col-md-12" id="buildingsMain">
+        <h3 className="centerAlign">Etsi kohteita</h3>
+        <div className="col-xs-5" id="searchInput">
           <input type="text" ref="bfilter" onKeyUp={this.searchTable} placeholder="Hae.." className="form-control" />
         </div>
         {!buildings && buildingState.isFetching &&
@@ -238,20 +239,21 @@ export default class Buildings extends React.Component {
           <p>Ei kohteita saatavilla.</p>
         }
         {buildings && buildings.length > 0 && !buildingState.isFetching &&
-          <table ref="btable" className="table buildingsTable">
+          <table ref="btable" className="table vocTable">
             <thead>
               <tr><th>Nimi</th><th>Rakennuksen käyttötarkoitus</th>
               <th>Rakennusvuosi</th>
               <th>Omistaja/hallinnoija</th>
               <th>Osoite</th>
               <th className="textCenter">Näytä</th>
+              <th className="textCenter">Tiedostot</th>
               {canEdit &&
               <th className="textCenter">Muokkaa</th>
               }
               {canEdit &&
               <th className="textCenter">Poista kohde</th>
               }
-              <th className="textCenter">Tiedostot</th></tr>
+              </tr>
             </thead>
             <tbody>
               {buildings.map((building, i) => <tr key={i}>
@@ -259,18 +261,8 @@ export default class Buildings extends React.Component {
                 <td>{building.buildingType}</td>
                 <td>{building.buildingYear}</td>
                 <td>{building.buildingOwner}</td>
-                <td><a target="_blank" href={addrQueryBase + building.buildingAddress + ", " + building.buildingCounty}>{building.buildingAddress}, {building.buildingCounty}</a></td>
+                <td><a target="_blank" rel="noopener noreferrer" href={addrQueryBase + building.buildingAddress + ", " + building.buildingCounty}>{building.buildingAddress}, {building.buildingCounty}</a></td>
                 <td className="textCenter"><Link to={`/${building._id}`}>Avaa rakennuksen tiedot</Link> </td>
-                {canEdit &&
-                <td className="textCenter">
-                    <Button onClick={() => this.showEditModal(building)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="edit" /></Button> 
-                </td>
-                }
-                {canEdit &&
-                <td className="textCenter">
-                    <Button onClick={() => this.showDeleteModal(building)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button>
-                </td>
-                }
                 <td className="textCenter">
                   {canEdit &&
                     <Button onClick={() => this.showFileUploadModal(building._id)} bsStyle="success" bsSize="xsmall"><Glyphicon glyph="plus" /> Lisää tiedosto</Button>
@@ -278,7 +270,8 @@ export default class Buildings extends React.Component {
                   {canEdit &&
                     <br />
                   }
-                  {building.files.map((file, ix) =>
+                
+                {building.files.map((file, ix) =>
                     <span key="ix">
                       <a href="true" onClick={(e) => { e.preventDefault(); this.downloadFile(file._id, file.originalname) }} style={{ cursor: 'pointer' }}>{file.originalname}</a><span>&nbsp;
                         {canEdit &&
@@ -290,8 +283,18 @@ export default class Buildings extends React.Component {
                       </span>
                       <br />
                     </span>
-                  )}
+                )}
                 </td>
+                {canEdit &&
+                <td className="textCenter">
+                    <Button onClick={() => this.showEditModal(building)} bsStyle="info" bsSize="xsmall"><Glyphicon glyph="edit" /></Button> 
+                </td>
+                }
+                {canEdit &&
+                <td className="textCenter">
+                    <Button onClick={() => this.showDeleteModal(building)} bsStyle="danger" bsSize="xsmall"><Glyphicon glyph="trash" /></Button>
+                </td>
+                }
               </tr>)
               }
             </tbody>
