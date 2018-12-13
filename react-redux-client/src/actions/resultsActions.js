@@ -7,7 +7,6 @@ const apiUrl = "/api/results/";
 
 // Add result for calcPoint
 export const addResult = (dataToAdd) => {
-  console.log(dataToAdd)
   return (dispatch) => {
     dispatch(addResultForCalcPointRequest(dataToAdd));
     return fetch(apiUrl, {
@@ -58,7 +57,6 @@ export const fetchResultsForCalcPoint = (calcPointId) => {
     // Returns a promise
     return fetch(apiUrl + calcPointId)
       .then(response => {
-        console.log(response)
         if (response.ok) {
           response.json().then(data => {
             dispatch(fetchResultsSuccess(data.results, data.calcPoint, data.message));

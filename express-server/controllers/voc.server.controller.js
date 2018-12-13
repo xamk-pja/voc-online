@@ -75,8 +75,6 @@ export const addNewCalcPoint = (req, res) => {
 
 // Edit calc point for building
 export const editCalcPoint = (req, res) => {
-  console.log(req.body);
-
   CalcPoint.findByIdAndUpdate(req.body.id, req.body, { new: true }, function (err, newCalcPoint) {
     if (err) {
       return res.json({ 'success': false, 'message': 'Virhe', 'error': err });
@@ -87,9 +85,13 @@ export const editCalcPoint = (req, res) => {
 }
 
 export const deleteCalcPoint = (req, res) => {
-
-  console.log(req.params.id);
   CalcPoint.findByIdAndRemove(req.params.id, (err, calcPoint) => {
+    if ( calcPoint.results ) {
+      calcPoint.results.forEach(function(result) {
+        console.log("Deleting all files linked to result: "+result._id+", as the parent calc point is marked to be deleted.");
+        deleteLinkedFiles(result._id);
+      });
+    }
     if (err) {
       return res.json({ 'success': false, 'message': 'Virhe' });
     }
@@ -100,13 +102,10 @@ export const deleteCalcPoint = (req, res) => {
 
 
 export const updateBuilding = (req, res) => {
-
-  console.log(req.body);
   Building.findOneAndUpdate({ _id: req.body.id }, req.body, { new: true }).populate('files').exec((err, building) => {
     if (err) {
       return res.json({ 'success': false, 'message': 'Virhe', 'error': err });
     }
-    console.log(building);
     return res.json({ 'success': true, 'message': 'Päivitettiin onnistuneesti', building });
   })
 }
@@ -116,8 +115,6 @@ export const getBuilding = (req, res) => {
     if (err) {
       return res.json({ 'success': false, 'message': 'Virhe' });
     }
-
-    console.log("it's my building: " + building);
 
     if (building.length) {
       return res.json({ 'success': true, 'message': 'Rakennus haettu onnistuneesti id:llä', building });
@@ -129,11 +126,48 @@ export const getBuilding = (req, res) => {
 }
 
 export const deleteBuilding = (req, res) => {
+
+  // delete linked files from building
+  deleteLinkedFiles(req.params.id);
+
+  // delete linked files from buildings calcpoint results
+  Building.find({ _id: req.params.id }).populate('calcPoints').populate('files').exec((err, building) => {
+    if ( building[0].calcPoints ) {
+      building[0].calcPoints.forEach(function(calcPoint){
+        if ( calcPoint.results ) {
+          calcPoint.results.forEach(function(result) {
+            console.log("Deleting all files linked to result: "+result._id+", as the parent building is marked to be deleted.");
+            deleteLinkedFiles(result._id);
+          });
+        }
+      });
+    } 
+  });
+
   Building.findByIdAndRemove(req.params.id, (err, building) => {
     if (err) {
       return res.json({ 'success': false, 'message': 'Virhe' });
     }
-
     return res.json({ 'success': true, 'message': building.buildingName + ' deleted successfully' });
   })
+}
+
+export async function deleteLinkedFiles(id) {
+  const { mongoose, gfs } = await require("../utils/mongoose");
+
+  GFS.find({ parentId: id }, function (err, files) {
+    if (err) {
+      console.log("File not found: " + err);
+    } else {
+      for (var i = 0; i < files.length; i++) {
+        var fid = files[i]._id;
+        gfs.remove({ _id: fid }, function (err) {
+          if (err) {
+            console.log("Error on deleting file (should be removed by hand, it's now a blank node in MongoDB GridFS): " + err);
+          };
+          console.log("File: " + fid + " referencing object: " + id + " is removed.");
+        });
+      }
+    }
+  });
 }

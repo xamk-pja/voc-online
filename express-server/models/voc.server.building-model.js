@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 mongoose.set('debug', true);
 
 var CalcPointSchema = mongoose.Schema({
@@ -88,8 +88,6 @@ var MeasurementResultsSchema = mongoose.Schema({
 
   files: [{ type: mongoose.Schema.Types.ObjectId, ref: 'GFS'  }]
 });
-
-
 
 var Building = mongoose.model('Building', BuildingSchema);
 var CalcPoint = mongoose.model('CalcPoint', CalcPointSchema);

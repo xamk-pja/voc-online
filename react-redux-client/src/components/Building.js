@@ -131,7 +131,7 @@ export default class Building extends React.Component {
           </div>
         }
         {buildingState.building && !buildingState.isFetching &&
-          <div className="container">
+          <div>
             <h3>Rakennuksen tiedot</h3>
             <div className="row">
               <div className="col-xs-6">

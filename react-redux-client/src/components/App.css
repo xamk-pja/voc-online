@@ -32,6 +32,7 @@
   border-style: solid;
   border-width: 2px;
   border-color: #e6e6e6;
+  padding:2%;
 }
 
 .container > .resultsDetail {

@@ -11,6 +11,7 @@ import FileUploadForm from './FileUploadForm';
 import ResultAddForm from './ResultAddForm';
 import ResultEditForm from './ResultEditForm';
 import { getLabelFor } from './utils.js';
+import { Link } from 'react-router';
 
 
 export default class Results extends React.Component {
@@ -149,6 +150,9 @@ export default class Results extends React.Component {
       const data = new FormData();
       data.append('parentId', addResultForm.parentId.value);
       data.append('usedMetrics', addResultForm.usedMetrics.value);
+      data.append('measurementMetrics', addResultForm.measurementMetrics.value);
+      data.append('weather', addResultForm.weather.value);
+      data.append('resultDetails', addResultForm.resultDetails.value);
       data.append('resultdate', addResultForm.resultdate.value);
       this.props.mappedAddResultForCalcPoint(data);
     }
@@ -197,10 +201,12 @@ export default class Results extends React.Component {
             <p>Ladataan....</p>
           </div>
         }
-        <button onClick={browserHistory.goBack}>Takaisin rakennuksen tietoihin</button>
 
         {buildingState.calcPoint && !buildingState.isFetching &&
           <div>
+             {buildingState.building &&
+              <Link to ={`/${buildingState.building._id}`}>Takaisin rakennuksen tietoihin</Link>
+             }
             <h4>Mittauspaikan <b>{buildingState.calcPoint.shortDesc}</b> tulokset:</h4>
             <hr />
             <p><Button type="button" className="btn btn-primary" bsStyle="success" onClick={this.showAddResultModal} bsSize="small"><Glyphicon glyph="plus" />Lisää uusi mittaustulos</Button></p>
@@ -299,7 +305,7 @@ export default class Results extends React.Component {
               }
               {addedResult && buildingState.successMsg &&
                 <Alert bsStyle="success">
-                  Kohde <strong> {addedResult._id} </strong>{buildingState.successMsg}
+                  {buildingState.successMsg}
                 </Alert>
               }
             </div>
@@ -339,7 +345,7 @@ export default class Results extends React.Component {
               }
               {resultToEdit && buildingState.successMsg &&
                 <Alert bsStyle="success">
-                  <strong> {resultToEdit._id} </strong>{buildingState.successMsg}
+                  <strong>Mittaustulos </strong>{buildingState.successMsg}
                 </Alert>
               }
             </div>
@@ -362,7 +368,7 @@ export default class Results extends React.Component {
           <Modal.Body>
             {buildingState.resultToDelete && !buildingState.error && !buildingState.isFetching &&
               <Alert bsStyle="warning">
-                Oletko varma, että haluat poistaa mittaustuloksen <strong>{buildingState.resultToDelete._id} </strong> ?
+                Oletko varma, että haluat poistaa mittaustuloksen?
               </Alert>
             }
             {buildingState.resultToDelete && buildingState.error &&

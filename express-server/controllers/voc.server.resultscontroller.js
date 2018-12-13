@@ -5,31 +5,28 @@
 //import models
 import { CalcPoint, Building, GFS, Result } from '../models/voc.server.building-model';
 import {dynamicSort} from '../utils/utils.js';
+import * as vocController from '../controllers/voc.server.controller';
 
 export const getResultsForCalcPoint = (req, res) => {
-
-  console.log(req.params.id);
   CalcPoint.findById(req.params.id)
-          .populate({
-            path:'results',
-            model:'Results',
-            populate: {
-              path:'files',
-              
-              model:'GFS'
-            }
-          }).exec((err, calcPoint) => {
-    console.log("Results found: " + calcPoint.results + " for calculation point: " + req.params.id);
+    .populate({
+      path: 'results',
+      model: 'Results',
+      populate: {
+        path: 'files',
 
-    if (err) {
-      return res.json({ 'success': false, 'message': 'Virhe' });
-    }
+        model: 'GFS'
+      }
+    }).exec((err, calcPoint) => {
+      if (err) {
+        return res.json({ 'success': false, 'message': 'Virhe' });
+      }
 
-    const results = calcPoint.results;
-    results.sort(dynamicSort("resultdate", "desc"));
+      const results = calcPoint.results;
+      results.sort(dynamicSort("resultdate", "desc"));
 
-    return res.json({ 'success': true, 'message': 'Kohteet haettu onnistuneesti', results, calcPoint });
-  });
+      return res.json({ 'success': true, 'message': 'Kohteet haettu onnistuneesti', results, calcPoint });
+    });
 }
 
 export const addMeasurementResult = (req, res) => {
@@ -66,7 +63,6 @@ export const addMeasurementResult = (req, res) => {
 
 
 export const editResult = (req, res) => {
-  console.log(req.body);
   Result.findByIdAndUpdate(req.body.id, req.body, { new: true }).populate('files').exec((err, result) => {
     if (err) {
       return res.json({ 'success': false, 'message': 'Virhe', 'error': err });
@@ -76,6 +72,11 @@ export const editResult = (req, res) => {
 }
 
 export const deleteResult = (req, res) => {
+
+  if ( req.params.id ) {
+    console.log("Removing files linked to result: "+req.params.id+" that is going to be deleted.");
+    vocController.deleteLinkedFiles(req.params.id);
+  }
   Result.findByIdAndRemove(req.params.id, (err, result) => {
     if (err) {
       return res.json({ 'success': false, 'message': 'Virhe' });

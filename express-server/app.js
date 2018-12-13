@@ -3,8 +3,10 @@ import express from 'express';
 import path from 'path';
 import bodyParser from 'body-parser';
 import logger from 'morgan';
-import mongoose from 'mongoose';
 import SourceMapSupport from 'source-map-support';
+
+// connect mongoose
+import gfs from './utils/mongoose';
 
 // import routes
 import vocRoutes from './routes/voc.server.route';
@@ -29,13 +31,6 @@ app.use(express.static(`${__dirname}/../react-redux-client/build`));
 
 // set the port
 const port = process.env.PORT || 3001;
-
-// connect to database
-mongoose.Promise = global.Promise;
-
-mongoose.connect('mongodb://localhost/vocnew', {
-  useMongoClient: true,
-});
 
 // add Source Map Support
 SourceMapSupport.install();

@@ -62,9 +62,4 @@ const ResultAddForm = (props) => {
   );
 }
 
-// onDropdownSelected(e) {
-//  console.log("THE VAL", e.target.value);
-//  //here you will see the current selected value of the select input
-// }
-
 export default ResultAddForm;

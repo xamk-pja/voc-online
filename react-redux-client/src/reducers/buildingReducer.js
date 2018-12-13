@@ -891,7 +891,7 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         ...currentState,
         buildings: currentState.buildings,
         building: currentState.building,
-        calcPoints: filteredCp,
+        calcPoints: currentState.calcPoints,
         isFetching: false,
         error: null,
         successMsg: action.message,
@@ -989,9 +989,6 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
       const fileUpdatedBuildings = currentState.buildings.map((building) => {
         if (building._id === action.fileParent._id) {
           building.files.push(action.file);
-
-          console.log(action.file._id);
-
           return building;
         } else {
           return building;
@@ -1001,7 +998,6 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
       const fileUpdatedCalcPoints = currentState.calcPoints.map((cp) => {
         if (cp._id === action.fileParent._id) {
           cp.files.push(action.file);
-          console.log(action.file._id);
           return cp;
         } else {
           return cp;
@@ -1010,17 +1006,14 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
       var fileUpdatedResults = [];
       if (currentState.results) {
         fileUpdatedResults = currentState.results.map((result) => {
-        if (result._id === action.fileParent._id) {
-          result.files.push(action.file);
-
-          console.log(action.file._id);
-
-          return result;
-        } else {
-          return result;
-        }
-      })
-    }
+          if (result._id === action.fileParent._id) {
+            result.files.push(action.file);
+            return result;
+          } else {
+            return result;
+          }
+        })
+      }
       return {
         ...currentState,
         buildings: fileUpdatedBuildings,
@@ -1143,23 +1136,23 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
       })
       // this is again stupid to get the collection of updated objects in 3 separate same kind of functions
       var fileUpdatedResultsEdit = [];
-      if ( currentState.results) {
+      if (currentState.results) {
         fileUpdatedResultsEdit = currentState.results.map((result) => {
-        if (result._id === action.fileParent) {
-          const updatedFiles = result.files.map((file) => {
-            if (file._id !== action.fileToEdit._id) {
-              //This is not the item we care about, keep it as is
-              return file;
-            }
-            //Otherwise, this is the one we want to return an updated value
-            return { ...file, ...action.fileToEdit }
-          })
+          if (result._id === action.fileParent) {
+            const updatedFiles = result.files.map((file) => {
+              if (file._id !== action.fileToEdit._id) {
+                //This is not the item we care about, keep it as is
+                return file;
+              }
+              //Otherwise, this is the one we want to return an updated value
+              return { ...file, ...action.fileToEdit }
+            })
 
-          result.files = updatedFiles;
-          return result;
-        }
-        return result
-      })
+            result.files = updatedFiles;
+            return result;
+          }
+          return result
+        })
       }
 
       return {
@@ -1251,25 +1244,32 @@ export const buildingReducer = (currentState = INITIAL_STATE, action) => {
         }
       })
 
-    // this is again stupid to get the collection of updated objects in 3 separate same kind of functions
-    const fileUpdatedCPsDelete = currentState.calcPoints.map((cp) => {
-      if (cp._id === parentId) {
-        const updatedFiles = cp.files.filter((f) => f._id !== fileid);
-        cp.files = updatedFiles;
-        return cp;
-      }
-      return cp
-    })
+      // this is again stupid to get the collection of updated objects in 3 separate same kind of functions
 
-    // this is again stupid to get the collection of updated objects in 3 separate same kind of functions
-    const fileUpdatedResultsDelete = currentState.results.map((r) => {
-      if (r._id === parentId) {
-        const updatedFiles = r.files.filter((f) => f._id !== fileid);
-        r.files = updatedFiles;
-        return r;
+      var fileUpdatedCPsDelete = currentState.calcPoints;
+      if (currentState.calcPoints) {
+        fileUpdatedCPsDelete = currentState.calcPoints.map((cp) => {
+          if (cp._id === parentId) {
+            const updatedFiles = cp.files.filter((f) => f._id !== fileid);
+            cp.files = updatedFiles;
+            return cp;
+          }
+          return cp
+        })
       }
-      return r;
-    })
+
+      var fileUpdatedResultsDelete = currentState.results;
+      if (currentState.results) {
+        // this is again stupid to get the collection of updated objects in 3 separate same kind of functions
+        fileUpdatedResultsDelete = currentState.results.map((r) => {
+          if (r._id === parentId) {
+            const updatedFiles = r.files.filter((f) => f._id !== fileid);
+            r.files = updatedFiles;
+            return r;
+          }
+          return r;
+        })
+      }
 
       return {
         ...currentState,

@@ -21,7 +21,6 @@ export const addNewBuilding = (building) => {
     }).then(response => {
       if (response.ok) {
         response.json().then(data => {
-          console.log(data.building);
           dispatch(addNewBuildingRequestSuccess(data.building, data.message))
         })
       }
@@ -114,7 +113,6 @@ export const fetchBuildingById = (buildingId) => {
     // Returns a promise
     return fetch(apiUrl + buildingId)
       .then(response => {
-        console.log(response)
         if (response.ok) {
           response.json().then(data => {
             dispatch(fetchBuildingSuccess(data.building[0], data.message));
@@ -278,7 +276,6 @@ export const addNewCalcPoint = (calcPoint) => {
     }).then(response => {
       if (response.ok) {
         response.json().then(data => {
-          console.log(data);
           dispatch(addNewCalcPointRequestSuccess(data.newCalcPoint, data.message))
         })
       }
