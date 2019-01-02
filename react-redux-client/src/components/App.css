@@ -6,7 +6,7 @@
 #root {
   /* background-color: #e6e6e6; */
   /* background-image: linear-gradient(maroon, white); */
-  background-image: url("../ab5.jpg");
+  background-image: url("/public/images/ab5.jpg");
   box-sizing: initial;
   min-height: 100vh;
 }
@@ -26,7 +26,9 @@
 
 .vocTable tr:nth-child(even) {background: #f2f2f2}
 
-.container > .buildingDetail {
+
+.container > div > .buildingDetail {
+  display: table;
   background: white !important;
   border-radius: 2%;
   border-style: solid;
@@ -49,4 +51,10 @@
 #searchInput {
   float: initial;
   margin: 0 auto;
+}
+
+.footer {
+  margin-top:1%;
+  padding-top:2%;
+  background: white !important;
 }

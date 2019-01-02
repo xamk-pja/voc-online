@@ -4,6 +4,9 @@ const mongoose = require('mongoose');
 module.exports = (async function () {
     // connect to database
     mongoose.Promise = global.Promise;
+
+
+
     mongoose.connect('mongodb://localhost:27017/vocnew', {
         useNewUrlParser: true
     });

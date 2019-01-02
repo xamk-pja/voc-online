@@ -1,7 +1,7 @@
 // ./react-redux-client/src/components/App.js
 import Keycloak from 'keycloak-js';
 import React from 'react';
-import { Nav, Navbar, NavItem } from 'react-bootstrap';
+import { Nav, Navbar, NavItem, Jumbotron, Button, Grid, Row, Col, Image } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import './App.css';
 import BuildingForm from './BuildingForm';
@@ -70,7 +70,7 @@ export default class App extends React.Component {
             <Navbar.Header>
                 <Nav>
                 <LinkContainer to="/">
-                  <NavItem>VOC online</NavItem>
+                  <NavItem>VOC Online</NavItem>
                 </LinkContainer>
                 </Nav>
             </Navbar.Header>
@@ -100,7 +100,33 @@ export default class App extends React.Component {
         {/* {appState.kc && appState.kc.authenticated &&
           <footer
         } */}
-      </div>
+
+        <Jumbotron bsClass="footer">
+          <Grid>
+            <Row>
+              <Col xs={4} md={2}>
+                <Image src="images/eu.png" responsive />
+              </Col>
+              <Col xs={4} md={2}>
+                <Image src="images/vipuvoimaa.png" responsive />
+              </Col>
+              <Col xs={4} md={2}>
+                <Image src="images/ely.png" responsive />
+              </Col>
+              <Col xs={4} md={2}>
+                <Image src="images/esp.png" responsive />
+              </Col>
+              <Col xs={4} md={2}>
+                <Image src="images/jsp.png" responsive />
+              </Col>
+         
+              <Col xs={4} md={2}>
+                <Image src="images/xamk.png" responsive />
+              </Col>
+            </Row>
+          </Grid>;
+        </Jumbotron>
+        </div>
     );
   }
 }

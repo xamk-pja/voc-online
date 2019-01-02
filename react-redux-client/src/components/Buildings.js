@@ -514,6 +514,7 @@ export default class Buildings extends React.Component {
           </Modal.Footer>
         </Modal>
       </div>
+  
     );
   }
 }

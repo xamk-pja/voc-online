@@ -24,17 +24,22 @@ export const uploadFile = (req, res) => {
   console.log('File [' + origname + ']: filename: ' + file.filename + ', encoding: ' + file.encoding + ', mimetype: ' + file.mimetype + ', linking to parent: ' + parentId);
 
   GFS.findOne({ '_id': file.id }, function (err, dbfile) {
-    console.log('Setting metadata for uploaded file: ' + file.originalname);
-    dbfile.set('originalname', origname);
-    dbfile.set('parentId', parentId);
-    dbfile.set('fileDesc', fileDesc);
-    dbfile.save((err, updatedfile) => {
-      if (err) {
-        console.log("err: " + err);
-        return res.json({ 'success': false, 'message': 'File upload failed, could not modify file metadata' });
-      }
-      console.log("Metadata added for uploaded file: " + updatedfile);
-    });
+
+    if (err) {
+      console.log("File upload failed: " + err);
+    } else {
+      console.log('Setting metadata for uploaded file: ' + file.originalname);
+      dbfile.set('originalname', origname);
+      dbfile.set('parentId', parentId);
+      dbfile.set('fileDesc', fileDesc);
+      dbfile.save((err, updatedfile) => {
+        if (err) {
+          console.log("err: " + err);
+          return res.json({ 'success': false, 'message': 'File upload failed, could not modify file metadata' });
+        }
+        console.log("Metadata added for uploaded file: " + updatedfile);
+      });
+    }
   });
 
   Building.findOne({ '_id': parentId }, function (err, building) {

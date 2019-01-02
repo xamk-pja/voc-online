@@ -124,14 +124,14 @@ export default class Building extends React.Component {
     }
 
     return (
-      <div className="buildingDetail">
+      <div>
         {!buildingState.building && buildingState.isFetching &&
           <div>
             <p>Ladataan....</p>
           </div>
         }
         {buildingState.building && !buildingState.isFetching &&
-          <div>
+          <div className="buildingDetail"> 
             <h3>Rakennuksen tiedot</h3>
             <div className="row">
               <div className="col-xs-6">
