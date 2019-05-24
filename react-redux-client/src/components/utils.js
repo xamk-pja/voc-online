@@ -144,6 +144,9 @@ export const getTypesFor = (paramType) => {
       items.push((<option key='Lampotila' value='Lampotila'>Lämpötila</option>));
       items.push((<option key='Kosteus' value='Kosteus'>Kosteus</option>));
       items.push((<option key='CO2' value='CO2'>CO2</option>));
+      items.push((<option key='Polynkoostumusanalyysi' value='Polynkoostumusanalyysi'>Pölynkoostumusanalyysi</option>));
+      items.push((<option key='Homekoirakokeet' value='Homekoirakokeet'>Homekoirakokeet</option>));
+      items.push((<option key='qPCRanalyysi' value='qPCRanalyysi'>qPCR-analyysi</option>));
     }
 
     // Dynamic loop for accessing props
